@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Quick copy of any file format to MP4
+# Quick copy of any file format to MP4.
 #
 # This script requires ffmpeg to be installed.
 #

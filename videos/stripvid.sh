@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Strip metadata from video.
+# Strip metadata from a video.
 #
 # This script requires ffmpeg to be installed.
 #

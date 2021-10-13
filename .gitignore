@@ -1,0 +1,89 @@
+# Trash
+$RECYCLE.BIN/
+.Trashes
+Network Trash Folder
+.Trash-*
+.nfs*
+
+# Temporary files
+.TemporaryItems
+Temporary Items
+.fuse_hidden*
+*~
+*.swp
+*.swo
+
+# Folder view configuration files
+.DS_Store
+.AppleDouble
+.LSOverride
+Desktop.ini
+.directory
+
+# Thumbnail cache files
+._*
+Thumbs.db
+ehthumbs.db
+
+# Folder view configuration files
+.DS_Store
+.AppleDouble
+.LSOverride
+Desktop.ini
+.AppleDesktop
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.VolumeIcon.icns
+.AppleDB
+.apdisk
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Compiled Python files
+*.pyc
+
+# Sass caches and maps
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cache files for Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# Sublime Text Package Control-specific files
+Package Control.last-run
+Package Control.ca-list
+Package Control.ca-bundle
+
+# SFTP configuration file
+sftp-config.json

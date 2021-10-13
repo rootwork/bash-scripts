@@ -3,18 +3,14 @@
 # Rewrite file and metadata dates on images to increment in the order of the
 # alphabetized filenames.
 #
-# I had a directory of images that were alphabetized by file name, and I wanted
-# to import them into a popular photo-printing service. I wanted to order them
-# by filename, but this particular service only offered sorting by the date the
-# photos were taken (forward or back).
+# I had a directory of images that were alphabetized by filename, and I wanted
+# to import them into Snapfish. I wanted to order them by filename, but
+# Snapfish only offered sorting by the date the photos were taken (forward or
+# back).
 #
 # So I went about finding out how to create sequential creation dates for these
 # photos' metadata based on their alphabetized file names. The actual date set
 # didn't matter to me, because all I wanted them to be was in order.
-#
-# Note this IRREVERSIBLY alters your images' file and metadata dates! Don't
-# run this on images for which you what to preserve the original information
-# unless you have a copy of them elsewhere.
 #
 # This script requires exiftool to be installed: sudo apt install exiftool
 #
@@ -61,7 +57,7 @@ dir=$1
 
 if [ -d "${dir}" ]; then # Make sure directory exists
 
-  echo -e "\e[0;91m\e[1mWARNING:\e[0m\e[1m This script will overwrite file and metadata dates for any images it finds. Do you want to proceed? (y/N)\e[0m"
+  echo -e "\e[0;91m\e[1mWARNING:\e[0m\e[1m This script will overwrite file and metadata dates for any images it finds in the directory \e[0;91m\e[1m${dir}\e[0m\e[1m -- do you want to proceed? (y/N)\e[0m"
   read go
   yes="y"
 

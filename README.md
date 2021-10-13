@@ -4,7 +4,8 @@
 
 # Formatting
 
-All bash scripts auto-formatted with [`shfmt`](https://github.com/mvdan/sh) using the [Sublime Text plugin](https://github.com/soifou/sublime-shfmt).
+All bash scripts auto-formatted with [`shfmt`](https://github.com/mvdan/sh)
+using the [Sublime Text plugin](https://github.com/soifou/sublime-shfmt).
 
 # License
 

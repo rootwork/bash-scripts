@@ -27,8 +27,7 @@
 - [minsmvid.sh](videos/minsmvid.sh): Reduce video size even more than minvid,
   with second argument for bitrate.
 - [stripvid.sh](videos/stripvid.sh): Strip metadata from a video.
-- [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and
-  a duration or stop timecode.
+- [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and a duration or stop timecode.
 
 ## Usage
 

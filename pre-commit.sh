@@ -3,6 +3,9 @@
 # Executes on git commits. Unrelated to the other Bash scripts.
 # https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/
 # https://gist.github.com/glfmn/0c5e9e2b41b48007ed3497d11e3dbbfa
+#
+# Requirements: prettier, shellcheck. Note shfmt is also run in the editor on
+# saves.
 
 # Colors
 RED='\033[1;31m'
@@ -12,9 +15,7 @@ NC='\033[0m'
 BOLD='\033[1m'
 
 # Git metadata
-ROOT_DIR="$(git rev-parse --show-toplevel)"
-BUILD_DIR="${ROOT_DIR}/target"
-BRANCH_NAME=$(git branch | grep '*' | sed 's/* //')
+BRANCH_NAME=$(git branch | grep '.*' | sed 's/* //')
 STASH_NAME="pre-commit-$(date +%s) on ${BRANCH_NAME}"
 
 echo "* ${BOLD}Checking for unstashed changes:${NC}"
@@ -39,11 +40,12 @@ else
   fi
 fi
 
-echo "* ${BOLD}Formatting:${NC}"
+echo "* ${BOLD}Testing and formatting:${NC}"
 
 # If using mulitple commands, append && to all but the last so if any one fails
 # it's accurately represented in the exit code.
-prettier --write .
+shellcheck -a ./*.sh &&
+  prettier --write .
 
 # Capture exit code from tests
 status=$?

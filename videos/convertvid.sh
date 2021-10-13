@@ -48,7 +48,7 @@
 #
 # LICENSE
 #
-# GPLv3: https://raw.githubusercontent.com/rootwork/dotfiles/hosted/LICENSE
+# GPLv3: https://github.com/rootwork/bash-scripts/blob/main/LICENSE
 
 input=$1
 

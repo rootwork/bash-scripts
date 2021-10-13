@@ -11,7 +11,7 @@
 #
 # LICENSE
 #
-# GPLv3: https://raw.githubusercontent.com/rootwork/dotfiles/hosted/LICENSE
+# GPLv3: https://github.com/rootwork/bash-scripts/blob/main/LICENSE
 
 echo "\e[0;92mGenerating list of input videos...\e[0m"
 echo "# Videos to merge" >concat.txt

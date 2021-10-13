@@ -37,7 +37,7 @@ export this directory to your `PATH` in `.bash_profile`, `.bashrc`, `.zshrc`,
 etc.:
 
 ```sh
-export PATH="$HOME//bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 ```
 
 ## Dependencies

@@ -39,7 +39,7 @@ else
   fi
 fi
 
-echo "* ${BOLD}Running tests and formatting:${NC}"
+echo "* ${BOLD}Formatting:${NC}"
 
 # If using mulitple commands, append && to all but the last so if any one fails
 # it's accurately represented in the exit code.
@@ -58,7 +58,7 @@ fi
 
 # Revert stash if changes were stashed to restore working directory files.
 if [ "$stash" -eq 1 ]; then
-  echo "* ${BOLD}Resotring working tree${NC}"
+  echo "* ${BOLD}Restoring working tree${NC}"
   if git reset --hard -q &&
     git stash apply --index -q &&
     git stash drop -q; then

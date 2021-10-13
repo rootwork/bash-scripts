@@ -24,7 +24,7 @@
 - [markvid.sh](videos/markvid.sh): Add a watermark image to a video.
 - [minvid.sh](videos/minvid.sh): Minify a video by re-encoding it and stripping
   metadata.
-- [minvidsm.sh](videos/minvidsm.sh): Reduce video size even more than minvid,
+- [minsmvid.sh](videos/minsmvid.sh): Reduce video size even more than minvid,
   with second argument for bitrate.
 - [stripvid.sh](videos/stripvid.sh): Strip metadata from a video.
 - [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and

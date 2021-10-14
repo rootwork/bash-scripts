@@ -2,7 +2,9 @@
 
 [![License](https://img.shields.io/npm/l/mjml-bullet-list?color=brightgreen&style=flat-square)](https://github.com/premail/mjml-bullet-list/blob/main/LICENSE)
 
-## Image manipulation
+## Script types
+
+### Image manipulation
 
 - [imagedate.sh](images/imagedate.sh): Rewrite file and metadata dates on images
   to increment in the order of the alphabetized filenames. Useful when you have
@@ -13,7 +15,7 @@
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first,
   then to JPEG.
 
-## Video manipulation
+### Video manipulation
 
 - [avimp4.sh](videos/avimp4.sh): Convert AVI to MP4. More thorough than ffmpeg's
   default process.
@@ -34,7 +36,7 @@
 - [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and
   a duration or stop timecode.
 
-## Boilerplate
+### Boilerplate code
 
 A collection of patterns and snippets I use when writing scripts, many derived
 from [William E. Shotts, Jr](https://linuxcommand.org/lc3_adv_standards.php).
@@ -63,7 +65,7 @@ I have tested these on Linux (Linux Mint, based on Ubuntu/Debian) using the
 [Z Shell](https://zsh.sourceforge.io/), but they should run in any
 Bash-compatible environment.
 
-# Linting
+## Linting
 
 All scripts have [shellcheck](https://www.shellcheck.net) run on them with every
 save and are auto-formatted with [`shfmt`](https://github.com/mvdan/sh) using

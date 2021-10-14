@@ -7,4 +7,4 @@ scripts to be self-contained, rather than loading these utility pieces in order
 to run.
 
 Files are NOT executable Bash scripts; they are saved as `.sh` only to aid with
-Bash syntax highlighting.
+Bash syntax highlighting. Thus the second line in each file disables shellcheck.

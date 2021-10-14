@@ -46,7 +46,7 @@ echo "* ${BOLD}Testing and formatting:${NC}"
 # it's accurately represented in the exit code.
 GLOBIGNORE='**/boilerplate/**:boilerplate/**' &&
   shellcheck --check-sourced ./*.sh &&
-  prettier --ignore-unknown --write .
+  prettier --write .
 
 # Capture exit code from tests
 status=$?

@@ -34,14 +34,16 @@
 
 # USAGE
 #
-# $ ./scriptname.sh <FILE>
-# $ ./scriptname.sh [-q|--quiet] <FILE>
-# $ ./scriptname.sh [-h|--help]
+# $ ./imagedate.sh [-q|--quiet] [-d|--date] [-t|--time] <FILE>
+# $ ./imagedate.sh [-h|--help]
 
 # EXAMPLES
 #
 # $ ./imagedate.sh .
-# $ ./imagedate.sh -q ./foo
+# $ ./imagedate.sh -q foo
+# $ ./imagedate.sh --date="2020:01:01" --time="10:10:10" foo
+# $ ./imagedate.sh -q --date="2020:01:01" --time="10:10:10" foo
+# $ ./imagedate.sh --help
 
 # RESOURCES
 #

@@ -6,8 +6,7 @@
 
 - [imagedate.sh](images/imagedate.sh): Rewrite file and metadata dates on images
   to increment in the order of the alphabetized filenames. Useful when you have
-  a system (Snapfish) that will only order by date, but you want images ordered
-  by filename.
+  a system (Snapfish) that will only order by date, but you want images ordered by filename.
 - [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the web.
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first,
   then to JPEG.

@@ -44,6 +44,8 @@ etc.:
 export PATH="$HOME/bin:$PATH"
 ```
 
+You might need to `chmod +x *.sh` them.
+
 ## Dependencies
 
 All scripts note any dependencies required. Most image scripts require

@@ -63,10 +63,11 @@ I have tested these on Linux (Linux Mint, based on Ubuntu/Debian) using the
 [Z Shell](https://zsh.sourceforge.io/), but they should run in any
 Bash-compatible environment.
 
-# Formatting
+# Linting
 
-All bash scripts auto-formatted with [`shfmt`](https://github.com/mvdan/sh)
-using the [Sublime Text plugin](https://github.com/soifou/sublime-shfmt).
+All scripts have [shellcheck](https://www.shellcheck.net) run on them with every
+save and are auto-formatted with [`shfmt`](https://github.com/mvdan/sh) using
+the [Sublime Text plugin](https://github.com/soifou/sublime-shfmt).
 
 # License
 

@@ -44,9 +44,8 @@ echo "* ${BOLD}Testing and formatting:${NC}"
 
 # If using mulitple commands, append && to all but the last so if any one fails
 # it's accurately represented in the exit code.
-prettier --write . &&
-  GLOBIGNORE='**/boilerplate/**:boilerplate/**' &&
-  shellcheck --check-sourced ./*.sh
+shellcheck -a ./*.sh &&
+  prettier --write .
 
 # Capture exit code from tests
 status=$?

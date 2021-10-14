@@ -42,15 +42,16 @@ See [boilerplate](boilerplate) for an overview.
 
 ## Usage
 
-Install individual script files to `~/bin`. If you're not doing so already,
-export this directory to your `PATH` in `.bash_profile`, `.bashrc`, `.zshrc`,
-etc.:
+You might need to run `chmod +x *.sh` to make them executable.
+
+Move script files to `~/bin`.
+
+If you're not doing so already, [export](https://linuxhint.com/path_in_bash/)
+this directory to your `PATH` in `.bash_profile`, `.bashrc`, `.zshrc`, etc.:
 
 ```sh
 export PATH="$HOME/bin:$PATH"
 ```
-
-You might need to `chmod +x *.sh` them.
 
 ## Dependencies
 

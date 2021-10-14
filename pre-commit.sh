@@ -47,7 +47,8 @@ echo "* ${BOLD}Testing and formatting:${NC}"
 # If using mulitple commands, append && to all but the last so if any one fails
 # it's accurately represented in the exit code.
 echo "$FILES" | xargs prettier --ignore-unknown --write &&
-  echo "$FILES" | xargs git add
+  echo "$FILES" | xargs git add &&
+  shellcheck --check-sourced ./*.sh
 
 # Capture exit code from tests
 status=$?

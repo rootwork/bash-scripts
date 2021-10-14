@@ -4,14 +4,17 @@
 
 ## Image manipulation
 
-- [imagedate.sh](images/imagedate.sh): Rewrite file and metadata dates on images to increment in the order of the  alphabetized filenames. Useful when you have a system (Snapfish) that will only order by date, but you want images  ordered by filename.
-- [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the web.
+- [imagedate.sh](images/imagedate.sh): Rewrite file and metadata dates on images
+  to increment in the order of the alphabetized filenames. Useful when you have
+  a system (Snapfish) that will only order by date, but you want images ordered
+  by filename.
+- [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the
+  web.
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first, then to JPEG.
 
 ## Video manipulation
 
-- [avimp4.sh](videos/avimp4.sh): Convert AVI to MP4. More thorough than ffmpeg's
-  default process.
+- [avimp4.sh](videos/avimp4.sh): Convert AVI to MP4. More thorough than ffmpeg's default process.
 - [convertvid.sh](videos/convertvid.sh): Convert any video files readable by
   ffmpeg (including but not limited to MP4, MPG, M4V, MOV, WEBM, WMV, AVI, 3GP)
   into modern H265-encoded MP4 file. This will generally be smaller in file size

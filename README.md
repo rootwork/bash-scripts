@@ -34,6 +34,12 @@
 - [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and
   a duration or stop timecode.
 
+## Boilerplate
+
+A collection of patterns and snippets I use when writing scripts, many derived
+from [William E. Shotts, Jr](https://linuxcommand.org/lc3_adv_standards.php).
+See [boilerplate](boilerplate) for an overview.
+
 ## Usage
 
 Install individual script files to `~/bin`. If you're not doing so already,

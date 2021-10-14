@@ -15,22 +15,22 @@ usage() {
   printf "%s\n" \
     "${bold}Usage:${reset} ${PROGNAME} [-q|--quiet] <DIR>"
   printf "%s\n" \
-    "         ${PROGNAME} [-h|--help]"
+    "       ${PROGNAME} [-h|--help]"
 }
 
 # Help message for --help
 help_message() {
   cat <<-_EOF_
 
-  ${bold}${PROGNAME} ${VERSION}${reset}
-  ${cyan}
-  [Long description]${reset}
+${bold}${PROGNAME} ${VERSION}${reset}
+${cyan}
+[Long description]${reset}
 
-  $(usage)
+$(usage)
 
-  ${bold}Options:${reset}
-  -h, --help    Display this help message and exit.
-  -q, --quiet   Quiet mode.
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+-q, --quiet   Quiet mode.
 
 _EOF_
 }

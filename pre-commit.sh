@@ -17,8 +17,6 @@ BOLD='\033[1m'
 # Git metadata
 BRANCH_NAME=$(git branch | grep '.*' | sed 's/* //')
 STASH_NAME="pre-commit-$(date +%s) on ${BRANCH_NAME}"
-FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
-[ -z "$FILES" ] && exit 0
 
 echo "* ${BOLD}Checking for unstashed changes:${NC}"
 stash=0
@@ -48,7 +46,7 @@ echo "* ${BOLD}Testing and formatting:${NC}"
 # it's accurately represented in the exit code.
 GLOBIGNORE='**/boilerplate/**:boilerplate/**' &&
   shellcheck --check-sourced ./*.sh &&
-  echo "$FILES" | xargs prettier --ignore-unknown --write
+  prettier --ignore-unknown --write .
 
 # Capture exit code from tests
 status=$?

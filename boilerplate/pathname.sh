@@ -8,5 +8,5 @@
 # https://linuxcommand.org/lc3_adv_standards.php
 
 # Sanitize directory name
-dir=$1
-[[ "$dir" =~ ^[./].*$ ]] || dir="./$dir"
+path=$1
+[[ "$path" =~ ^[./].*$ ]] || path="./$path"

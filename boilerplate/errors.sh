@@ -9,9 +9,9 @@
 
 # Error handling
 error_exit() {
-  local error_message="$1"
+  local error_message="${red}$1${reset}"
 
-  printf "%s\n" "${PROGNAME}: ${error_message:-"Unknown Error"}" >&2
+  printf "%s\n" "${PROGNAME}: ${error_message:-"${red}Unknown Error${reset}"}" >&2
   exit 1
 }
 
@@ -26,14 +26,14 @@ signal_exit() {
 
   case "$signal" in
     INT)
-      error_exit "Program interrupted by user"
+      error_exit "${yellow}Program interrupted by user.${reset}"
       ;;
     TERM)
-      printf "\n%s\n" "$PROGNAME: Program terminated" >&2
+      printf "\n%s\n" "${red}$PROGNAME: Program terminated.${reset}" >&2
       graceful_exit
       ;;
     *)
-      error_exit "$PROGNAME: Terminating on unknown signal"
+      error_exit "${red}$PROGNAME: Terminating on unknown signal.${reset}"
       ;;
   esac
 }

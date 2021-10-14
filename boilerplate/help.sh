@@ -28,8 +28,7 @@ help_message() {
 
   $(usage)
 
-  Options:
-
+  ${bold}Options:${reset}
   -h, --help    Display this help message and exit.
   -q, --quiet   Quiet mode.
 

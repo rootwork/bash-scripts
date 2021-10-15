@@ -14,6 +14,8 @@ error_exit() {
   printf "%s\n" "${PROGNAME}: ${error_message:-"${red}Unknown Error${reset}"}" >&2
   exit 1
 }
+# Use as following:
+# command || error_exit "command failed in line $LINENO"
 
 graceful_exit() {
   # Optionally provide file cleanup here.

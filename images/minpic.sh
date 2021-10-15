@@ -37,7 +37,7 @@
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.1"
+VERSION="1.2"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)

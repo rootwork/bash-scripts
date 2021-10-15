@@ -15,6 +15,8 @@ needs_arg() {
   fi
 }
 while getopts :dt-:qh OPT; do
+  # Using help flag only? The above should be:
+  # while getopts :-:h OPT; do
   if [ "$OPT" = "-" ]; then # long option: reformulate OPT and OPTARG
     OPT="${OPTARG%%=*}"     # extract long option name
     OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)

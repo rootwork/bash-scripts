@@ -128,7 +128,7 @@ convert=$(command -v convert)
 if [[ ! $convert ]]; then
   error_exit "Imagemagick must be installed. Aborting."
 fi
-dwebp=$(command -v adfads)
+dwebp=$(command -v dwebp)
 if [[ ! $dwebp ]]; then
   error_exit "libwebp must be installed <https://developers.google.com/speed/webp/download>. Aborting."
 fi
@@ -136,10 +136,10 @@ fi
 printf "%s\n" "${green}Converting webp to jpeg...${reset}"
 
 if [ -f "${file}" ]; then # Make sure file exists
-  dwebp "$file" -quiet -o "$name".png
-  convert "$name".png "$name".jpg
+  "$dwebp" "$file" -quiet -o "$name".png
+  "$convert" "$name".png "$name".jpg
   rm "$name".png
-  printf "%s\n" "Image converted to ${name}.jpg"
+  printf "%s\n" "${cyan}Image converted to ${reset}${bold}${name}.jpg${reset}"
 else
   error_exit "Image file '${file}' not found."
 fi

@@ -14,7 +14,7 @@
 # first image is customizable (default 2000:01:01 00:00:00) and images are
 # separated in increments of 5 minutes.
 #
-# This script requires exiftool to be installed: sudo apt install exiftool
+# This script requires exiftool to be installed: https://exiftool.org
 
 # Copyright 2021, Ivan Boothe <git@rootwork.org>
 
@@ -69,6 +69,7 @@
 # https://exiftool.org/forum/index.php?topic=3429.0
 
 # Revision history:
+# 2021-10-15  Adding checks for dependencies, updates to notifications (1.3)
 # 2021-10-14  Added flag options for date and time; applying quiet mode to
 #             exiftool; minor cleanup and bug fixes (1.2)
 # 2021-10-13  Modified into a full-fledged program (1.1)
@@ -77,7 +78,7 @@
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.2"
+VERSION="1.3"
 red=$(tput setaf 1)
 yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
@@ -186,9 +187,19 @@ while getopts :dt-:qh OPT; do
 done
 shift $((OPTIND - 1)) # remove parsed options and args from $@ list
 
-# Sanitize directory name
+# Program variables
 dir=$1
+if [[ ! $dir ]]; then
+  usage >&2
+  error_exit "Directory must be provided."
+fi
 [[ "$dir" =~ ^[./].*$ ]] || dir="./$dir"
+
+# Dependencies
+exiftool=$(command -v exiftool)
+if [[ ! $exiftool ]]; then
+  error_exit "Exiftool must be installed <https://exiftool.org>. Aborting."
+fi
 
 if [ -d "${dir}" ]; then # Make sure directory exists
 
@@ -231,19 +242,19 @@ if [ -d "${dir}" ]; then # Make sure directory exists
     # Use exiftool to set "all dates" (which is only standard image
     # creation/modification/access) to an arbitrary date, (P)reserving file
     # modification date.
-    exiftool $quiet_mode -overwrite_original -P -alldates="${date} ${time}" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    $exiftool $quiet_mode -overwrite_original -P -alldates="${date} ${time}" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     # Now update those dates sequentially separated apart (timestamps will kick
     # over to the next day/month/year as necessary), going alphabetically by
     # filename, at five-minute intervals.
-    exiftool $quiet_mode -fileorder FileName -overwrite_original -P '-alldates+<0:${filesequence;$_*=5}' "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    $exiftool $quiet_mode -fileorder FileName -overwrite_original -P '-alldates+<0:${filesequence;$_*=5}' "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     # Update nonstandard "Date/Time Digitized" field to match creation date.
-    exiftool $quiet_mode -r -overwrite_original -P "-XMP-exif:DateTimeDigitized<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    $exiftool $quiet_mode -r -overwrite_original -P "-XMP-exif:DateTimeDigitized<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     # Update nonstandard and stupidly vague "Metadata Date" field to match
     # creation date.
-    exiftool $quiet_mode -r -overwrite_original -P "-XMP-xmp:MetadataDate<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    $exiftool $quiet_mode -r -overwrite_original -P "-XMP-xmp:MetadataDate<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     echo -e "\e[0;92m                      ...done.\e[0m"
 

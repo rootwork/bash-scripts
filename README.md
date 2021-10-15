@@ -17,8 +17,9 @@
 
 ### Video manipulation
 
-- [avimp4.sh](videos/avimp4.sh): Convert AVI to MP4. More thorough than ffmpeg's
-  default process.
+- [avimp4.sh](videos/avimp4.sh): Convert AVI videos to MP4 format. More thorough
+  than ffmpeg's default process, resulting in both smaller and better-quality
+  videos.
 - [convertvid.sh](videos/convertvid.sh): Convert any video files readable by
   ffmpeg (including but not limited to MP4, MPG, M4V, MOV, WEBM, WMV, AVI, 3GP)
   into modern H265-encoded MP4 file. This will generally be smaller in file size

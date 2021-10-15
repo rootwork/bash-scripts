@@ -22,7 +22,7 @@
 #
 # $ ./minpic.sh <FILE|FILEGLOB> <FILE2|FILEGLOB2> ...
 # $ ./minpic.sh [-h|--help]
-#
+
 # EXAMPLES
 #
 # $ ./minpic.sh pic.jpg

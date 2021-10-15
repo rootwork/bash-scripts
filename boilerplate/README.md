@@ -21,5 +21,6 @@ syntax highlighting. Thus the second line in each file disables
 5. [help.sh](help.sh)
 6. [options.sh](options.sh)
 7. [pathname.sh](pathname.sh)
+8. [dependencies.sh](dependencies.sh)
 
 When considering using temporary files: [temp.sh](temp.sh)

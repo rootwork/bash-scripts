@@ -31,7 +31,7 @@
 
 # Revision history:
 # 2021-10-14  Minor cleanup and standardization (1.1)
-# 2021-10-13  Initial release (1.0)
+# 2021-10-11  Initial release (1.0)
 # ---------------------------------------------------------------------------
 
 # Standard variables

@@ -30,6 +30,7 @@
 # $ ./minpic.sh *.jpg pic2.png
 
 # Revision history:
+# 2021-10-15  Adding checks for dependencies, filename (1.2)
 # 2021-10-14  Minor cleanup and standardization (1.1)
 # 2021-10-11  Initial release (1.0)
 # ---------------------------------------------------------------------------
@@ -119,6 +120,19 @@ while getopts :dt-:qh OPT; do
   esac
 done
 shift $((OPTIND - 1)) # remove parsed options and args from $@ list
+
+# Program variables
+file=$1
+if [[ ! $file ]]; then
+  usage >&2
+  error_exit "Filename must be provided."
+fi
+
+# Dependencies
+trimage=$(command -v trimage)
+if [[ ! $trimage ]]; then
+  error_exit "Trimage must be installed <https://trimage.org>. Aborting."
+fi
 
 printf "%s\n" "${green}Using Trimage to minify images...${reset}"
 

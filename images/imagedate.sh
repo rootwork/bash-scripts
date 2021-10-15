@@ -31,14 +31,16 @@
 
 # USAGE
 #
-# $ ./imagedate.sh <DIR>
-# $ ./imagedate.sh [-q|--quiet] <DIR>
+# $ ./imagedate.sh [-q|--quiet] [--date=<YYYY:mm:ss>] [--time=<HH:MM:SS>] <DIR>
 # $ ./imagedate.sh [-h|--help]
 
 # EXAMPLES
 #
 # $ ./imagedate.sh .
-# $ ./imagedate.sh -q ./photos
+# $ ./imagedate.sh -q images
+# $ ./imagedate.sh --date="2020:01:01" --time="10:10:10" images
+# $ ./imagedate.sh -q --date="2020:01:01" --time="10:10:10" images
+# $ ./imagedate.sh --help
 
 # HELPFUL COMMANDS
 # Additional tools you can use during this process.
@@ -67,86 +69,118 @@
 # https://exiftool.org/forum/index.php?topic=3429.0
 
 # Revision history:
+# 2021-10-14  Added flag options for date and time; applying quiet mode to
+#             exiftool; minor cleanup and bug fixes (1.2)
 # 2021-10-13  Modified into a full-fledged program (1.1)
 # 2020-12-02  Created as a GitHub Gist of suggested commands
 # ---------------------------------------------------------------------------
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.1"
-
-# Usage: Separate lines for mutually exclusive options.
-usage() {
-  printf "%s\n" \
-    "Usage: ${PROGNAME} [-q|--quiet] <DIR>"
-  printf "%s\n" \
-    "         ${PROGNAME} [-h|--help]"
-}
-
-# Help message for --help
-help_message() {
-  cat <<-_EOF_
-  ${PROGNAME} ${VERSION}
-  Rewrite file and metadata dates on images to increment in the order of the alphabetized filenames. Useful when you have a system (Snapfish) that will only order by date, but you want images ordered by filename. Date and time of first image is customizable (default 2000:01:01 00:00:00) and images are separated in increments of 5 minutes.
-
-  $(usage)
-
-  Options:
-
-  -h, --help    Display this help message and exit.
-  -q, --quiet   Quiet mode. Accept all defaults.
-
-_EOF_
-}
+VERSION="1.2"
+black=$(tput setaf 0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+blue=$(tput setaf 4)
+magenta=$(tput setaf 5)
+cyan=$(tput setaf 6)
+white=$(tput setaf 7)
+bold=$(tput bold)
+reset=$(tput sgr0)
+reverse=$(tput smso)
+underline=$(tput smul)
 
 # Error handling
 error_exit() {
-  local error_message="$1"
+  local error_message="${red}$1${reset}"
 
   printf "%s\n" "${PROGNAME}: ${error_message:-"Unknown Error"}" >&2
   exit 1
 }
 
-# Handle trapped signals
+graceful_exit() {
+  exit 0
+}
+
 signal_exit() {
 
   local signal="$1"
 
   case "$signal" in
     INT)
-      error_exit "Program interrupted by user"
+      error_exit "${yellow}Program interrupted by user.${reset}"
       ;;
     TERM)
-      printf "\n%s\n" "$PROGNAME: Program terminated" >&2
-      # graceful_exit
+      printf "\n%s\n" "${red}$PROGNAME: Program terminated.${reset}" >&2
+      graceful_exit
       ;;
     *)
-      error_exit "$PROGNAME: Terminating on unknown signal"
+      error_exit "${red}$PROGNAME: Terminating on unknown signal.${reset}"
       ;;
   esac
 }
 
-# Parse command line
-needs_arg() { if [ -z "$OPTARG" ]; then die "No arg for --$OPT option"; fi; }
-while getopts :hq-: OPT; do
-  # support long options: https://stackoverflow.com/a/28466267/519360
-  if [ "$OPT" = "-" ]; then # long option: reformulate OPT and OPTARG
+# Usage: Separate lines for mutually exclusive options.
+usage() {
+  printf "%s\n" \
+    "${bold}Usage:${reset} ${PROGNAME} [-q|--quiet] [--date=<YYYY:mm:ss>] [--time=<HH:MM:SS>] <DIR>"
+  printf "%s\n" \
+    "       ${PROGNAME} [-h|--help]"
+}
+
+# Help message for --help
+help_message() {
+  cat <<-_EOF_
+
+${bold}${PROGNAME} ${VERSION}${reset}
+${cyan}
+Rewrite file and metadata dates on images to increment in the order of the
+alphabetized filenames. Useful when you have a system (Snapfish) that will
+only order by date, but you want images ordered by filename. Date and time of
+first image is customizable (default 2000:01:01 00:00:00) and images are
+separated in increments of 5 minutes.${reset}
+
+$(usage)
+
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+-q, --quiet   Quiet mode. Accept all defaults.
+--date=       Provide starting date, in YYYY:mm:dd format.
+--time=       Provide starting time, in HH:MM:SS format.
+
+_EOF_
+}
+
+# Options and flags from command line
+needs_arg() {
+  if [ -z "$OPTARG" ]; then
+    echo "$OPT: $OPTARG"
+    error_exit "Error: Argument required for option '$OPT' but none provided."
+  fi
+}
+while getopts :dt-:qh OPT; do
+  if [ "$OPT" = "-" ]; then
     OPT="${OPTARG%%=*}"     # extract long option name
     OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)
-    OPTARG="${OPTARG#=}"    # if long option argument, remove assigning `=`
+    OPTARG="${OPTARG#=}"    # remove assigning `=`
   fi
   case "$OPT" in
     h | help)
       help_message
-      # graceful_exit
+      graceful_exit
       ;;
     q | quiet)
-      quiet_mode=true
+      quiet_mode="-quiet"
       ;;
-    # c | charlie)
-    #   needs_arg
-    #   charlie="$OPTARG"
-    #   ;;
+    d | date)
+      needs_arg
+      date="$OPTARG"
+      ;;
+    t | time)
+      needs_arg
+      time="$OPTARG"
+      ;;
     ??*) # bad long option
       usage >&2
       error_exit "Unknown option --$OPT"
@@ -172,19 +206,21 @@ if [ -d "${dir}" ]; then # Make sure directory exists
 
   if [[ $go == *"y"* || $quiet_mode ]]; then
 
-    if [[ ! $quiet_mode ]]; then
-      echo -e "\033[1;33mOn what date do you want your images to begin incrementing (YYYY:MM:DD, default 2000:01:01)?\e[0m"
-      read -r startdate
+    if [[ ! $date ]]; then
+      if [[ ! $quiet_mode ]]; then
+        echo -e "\033[1;33mOn what date do you want your images to begin incrementing (YYYY:mm:dd, default 2000:01:01)?\e[0m"
+        read -r startdate
+      fi
+      date="${startdate:=2000:01:01}"
     fi
 
-    date="${startdate:=2000:01:01}"
-
-    if [[ ! $quiet_mode ]]; then
-      echo -e "\033[1;33mAt what time do you want your images to begin incrementing (HH:MM:SS, default 00:00:00)?\e[0m"
-      read -r starttime
+    if [[ ! $time ]]; then
+      if [[ ! $quiet_mode ]]; then
+        echo -e "\033[1;33mAt what time do you want your images to begin incrementing (HH:MM:SS, default 00:00:00)?\e[0m"
+        read -r starttime
+      fi
+      time="${starttime:=00:00:00)}"
     fi
-
-    time="${starttime:=00:00:00)}"
 
     # Begin...
     echo -e "\e[0;92mSetting image dates...\e[0m"
@@ -202,19 +238,19 @@ if [ -d "${dir}" ]; then # Make sure directory exists
     # Use exiftool to set "all dates" (which is only standard image
     # creation/modification/access) to an arbitrary date, (P)reserving file
     # modification date.
-    exiftool -overwrite_original -P -alldates="${date} ${time}" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    exiftool $quiet_mode -overwrite_original -P -alldates="${date} ${time}" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     # Now update those dates sequentially separated apart (timestamps will kick
     # over to the next day/month/year as necessary), going alphabetically by
     # filename, at five-minute intervals.
-    exiftool -fileorder FileName -overwrite_original -P '-alldates+<0:${filesequence;$_*=5}' "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    exiftool $quiet_mode -fileorder FileName -overwrite_original -P '-alldates+<0:${filesequence;$_*=5}' "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     # Update nonstandard "Date/Time Digitized" field to match creation date.
-    exiftool -r -overwrite_original -P "-XMP-exif:DateTimeDigitized<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    exiftool $quiet_mode -r -overwrite_original -P "-XMP-exif:DateTimeDigitized<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     # Update nonstandard and stupidly vague "Metadata Date" field to match
     # creation date.
-    exiftool -r -overwrite_original -P "-XMP-xmp:MetadataDate<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
+    exiftool $quiet_mode -r -overwrite_original -P "-XMP-xmp:MetadataDate<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
     echo -e "\e[0;92m                      ...done.\e[0m"
 

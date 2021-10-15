@@ -42,6 +42,10 @@ A collection of patterns and snippets I use when writing scripts, many derived
 from [William E. Shotts, Jr](https://linuxcommand.org/lc3_adv_standards.php).
 See [boilerplate](boilerplate) for an overview.
 
+### Test files
+
+See [test](test) for sample files and sources.
+
 ## Usage
 
 You might need to run `chmod +x *.sh` to make them executable.

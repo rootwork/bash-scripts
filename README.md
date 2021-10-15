@@ -55,6 +55,12 @@ this directory to your `PATH` in `.bash_profile`, `.bashrc`, `.zshrc`, etc.:
 export PATH="$HOME/bin:$PATH"
 ```
 
+If you wish, you can add aliases for them, saving three whole characters!
+
+```sh
+alias minvid="minvid.sh"
+```
+
 ## Dependencies
 
 All scripts note any dependencies required.

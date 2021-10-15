@@ -48,9 +48,9 @@ See [test](test) for sample files and sources.
 
 ## Usage
 
-You might need to run `chmod +x *.sh` to make them executable.
+Download the script files you want and move them to `~/bin`.
 
-Move script files to `~/bin`.
+You might need to run `chmod +x *.sh` to make them executable.
 
 If you're not doing so already, [export](https://linuxhint.com/path_in_bash/)
 this directory to your `PATH` in `.bash_profile`, `.bashrc`, `.zshrc`, etc.:

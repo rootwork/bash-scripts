@@ -9,8 +9,12 @@
 # https://stackoverflow.com/a/28466267/519360
 
 # Options and flags from command line
-needs_arg() { if [ -z "$OPTARG" ]; then error_exit "Argument required for option '$OPT' but none provided."; fi; }
-while getopts :h:q:d:-: OPT; do
+needs_arg() {
+  if [ -z "$OPTARG" ]; then
+    error_exit "Error: Argument required for option '$OPT' but none provided."
+  fi
+}
+while getopts :dt-:qh OPT; do
   if [ "$OPT" = "-" ]; then # long option: reformulate OPT and OPTARG
     OPT="${OPTARG%%=*}"     # extract long option name
     OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)

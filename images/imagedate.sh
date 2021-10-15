@@ -80,6 +80,7 @@
 PROGNAME=${0##*/}
 VERSION="1.3"
 red=$(tput setaf 1)
+green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
 bold=$(tput bold)
@@ -149,7 +150,6 @@ _EOF_
 # Options and flags from command line
 needs_arg() {
   if [ -z "$OPTARG" ]; then
-    echo "$OPT: $OPTARG"
     error_exit "Error: Argument required for option '$OPT' but none provided."
   fi
 }
@@ -204,7 +204,7 @@ fi
 if [ -d "${dir}" ]; then # Make sure directory exists
 
   if [[ ! $quiet_mode ]]; then
-    echo -e "\033[1;31mWARNING:\033[0m\033[1m This script will overwrite file and metadata dates for any images it finds in the directory \033[1;31m${dir}\033[0m\033[1m -- do you want to proceed? (y/N)\e[0m"
+    printf "%s\n" "${bold}${red}WARNING:${reset}${bold} This script will overwrite file and metadata dates for any images it finds in the directory ${red}${dir}${reset}${bold} -- do you want to proceed? (y/N)${reset}"
     read -r go
   fi
 
@@ -212,7 +212,7 @@ if [ -d "${dir}" ]; then # Make sure directory exists
 
     if [[ ! $date ]]; then
       if [[ ! $quiet_mode ]]; then
-        echo -e "\033[1;33mOn what date do you want your images to begin incrementing (YYYY:mm:dd, default 2000:01:01)?\e[0m"
+        printf "%s\n" "${yellow}On what date do you want your images to begin incrementing (YYYY:mm:dd, default 2000:01:01)?${reset}"
         read -r startdate
       fi
       date="${startdate:=2000:01:01}"
@@ -220,14 +220,14 @@ if [ -d "${dir}" ]; then # Make sure directory exists
 
     if [[ ! $time ]]; then
       if [[ ! $quiet_mode ]]; then
-        echo -e "\033[1;33mAt what time do you want your images to begin incrementing (HH:MM:SS, default 00:00:00)?\e[0m"
+        printf "%s\n" "${yellow}At what time do you want your images to begin incrementing (HH:MM:SS, default 00:00:00)?${reset}"
         read -r starttime
       fi
       time="${starttime:=00:00:00)}"
     fi
 
     # Begin...
-    echo -e "\e[0;92mSetting image dates...\e[0m"
+    printf "%s\n" "${green}Setting image dates...${reset}"
 
     # Set all files to sequential (alphabetical) modified date.
     touch -a -m -- "${dir}"/* || error_exit "touch failed in line $LINENO"
@@ -256,12 +256,13 @@ if [ -d "${dir}" ]; then # Make sure directory exists
     # creation date.
     $exiftool $quiet_mode -r -overwrite_original -P "-XMP-xmp:MetadataDate<CreateDate" "${dir}"/. || error_exit "exiftool failed in line $LINENO"
 
-    echo -e "\e[0;92m                      ...done.\e[0m"
+    printf "%s\n" "${green}                      ...done.${reset}"
 
   else
-    echo -e "\e[0;92mOperation canceled.\e[0m"
+    printf "%s\n" "${yellow}Operation canceled.${reset}"
+    graceful_exit
   fi
 
 else
-  echo -e "\e[0;91mError. Directory \e[0m'${dir}'\e[0;91m not found.\e[0m"
+  error_exit "Directory '${dir}' not found."
 fi

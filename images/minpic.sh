@@ -138,7 +138,7 @@ printf "%s\n" "${green}Using Trimage to minify images...${reset}"
 
 for i in "$@"; do
   if [ -f "${i}" ]; then # Make sure image file exists
-    trimage --quiet --file="$i"
+    "$trimage" --quiet --file="$i"
     printf "%s\n" "${green}Image file '${i}' minified.${reset}"
   else
     error_exit "Image file '${i}' not found."

@@ -1,6 +1,6 @@
-# Test images
+# Test files
 
-## Sources
+## Image sources
 
 jpeg1.jpg
 https://developers.google.com/speed/webp/gallery1
@@ -25,3 +25,11 @@ https://file-examples.com/index.php/sample-images-download/sample-webp-download/
 
 webp4.webp
 https://filesamples.com/formats/webp
+
+## Video sources
+
+avi1.avi
+https://filesamples.com/formats/avi
+
+avi2.avi
+https://file-examples.com/index.php/sample-video-files/sample-avi-files-download/

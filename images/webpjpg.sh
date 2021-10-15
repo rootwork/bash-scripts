@@ -92,7 +92,7 @@ _EOF_
 }
 
 # Options and flags from command line
-while getopts :dt-:qh OPT; do
+while getopts :-:h OPT; do
   if [ "$OPT" = "-" ]; then
     OPT="${OPTARG%%=*}"     # extract long option name
     OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)

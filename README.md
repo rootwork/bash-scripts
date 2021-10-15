@@ -30,7 +30,7 @@
 - [markvid.sh](videos/markvid.sh): Add a watermark image to a video.
 - [minvid.sh](videos/minvid.sh): Minify a video by re-encoding it and stripping
   metadata.
-- [minsmvid.sh](videos/minsmvid.sh): Reduce video size even more than minvid,
+- [minsmvid.sh](videos/minsmvid.sh): Reduce video size even more than `minvid`,
   with second argument for bitrate.
 - [stripvid.sh](videos/stripvid.sh): Strip metadata from a video.
 - [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and
@@ -57,9 +57,7 @@ export PATH="$HOME/bin:$PATH"
 
 ## Dependencies
 
-All scripts note any dependencies required. Most image scripts require
-[imagemagick](https://imagemagick.org/index.php) and most video scripts require
-[ffmpeg](https://ffmpeg.org/).
+All scripts note any dependencies required.
 
 I have tested these on Linux (Linux Mint, based on Ubuntu/Debian) using the
 [Z Shell](https://zsh.sourceforge.io/), but they should run in any

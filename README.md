@@ -11,7 +11,7 @@
   a system (Snapfish) that will only order by date, but you want images ordered
   by filename.
 - [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the
-  web.
+  web. Really just a more convenient wrapper for Trimage.
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first,
   then to JPEG.
 

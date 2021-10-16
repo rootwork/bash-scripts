@@ -1,28 +1,146 @@
-#!/bin/sh
+#!/bin/bash
+
+# ---------------------------------------------------------------------------
+# joinvid - Combine videos. Provide one or more filenames of videos to be
+# combined; the resulting video file will be named 'joined.mp4' (regardless of
+# the input formats).
 #
-# Combine videos. Provide one or more filenames of videos to be combined; the
-# resulting video file will be named 'joined.mp4'.
-#
-# This script requires ffmpeg to be installed.
-#
+# This script requires ffmpeg to be installed: https://ffmpeg.org
+
+# Copyright 2021, Ivan Boothe <git@rootwork.org>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License at <http://www.gnu.org/licenses/> for
+# more details.
+
 # USAGE
 #
-# $ ./joinvid.sh FILENAME1 FILENAME2...
-#
-# LICENSE
-#
-# GPLv3: https://github.com/rootwork/bash-scripts/blob/main/LICENSE
+# $ ./joinvid.sh <FILE1> <FILE2> ...
+# $ ./joinvid.sh [-h|--help]
 
-echo "\e[0;92mGenerating list of input videos...\e[0m"
+# Revision history:
+# 2021-10-15  Adding help, dependency checks, and other standardization (1.1)
+# 2021-10-11  Initial release (1.0)
+# ---------------------------------------------------------------------------
+
+# Standard variables
+PROGNAME=${0##*/}
+VERSION="1.1"
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+cyan=$(tput setaf 6)
+bold=$(tput bold)
+reset=$(tput sgr0)
+
+# Error handling
+error_exit() {
+  local error_message="${red}$1${reset}"
+
+  printf "%s\n" "${PROGNAME}: ${error_message:-"Unknown Error"}" >&2
+  exit 1
+}
+
+graceful_exit() {
+  exit 0
+}
+
+signal_exit() {
+  local signal="$1"
+
+  case "$signal" in
+    INT)
+      error_exit "${yellow}Program interrupted by user.${reset}"
+      ;;
+    TERM)
+      printf "\n%s\n" "${red}$PROGNAME: Program terminated.${reset}" >&2
+      graceful_exit
+      ;;
+    *)
+      error_exit "${red}$PROGNAME: Terminating on unknown signal.${reset}"
+      ;;
+  esac
+}
+
+# Usage: Separate lines for mutually exclusive options.
+usage() {
+  printf "%s\n" \
+    "${bold}Usage:${reset} ${PROGNAME} <FILE1> <FILE2> ..."
+  printf "%s\n" \
+    "       ${PROGNAME} [-h|--help]"
+}
+
+# Help message for --help
+help_message() {
+  cat <<-_EOF_
+
+${bold}${PROGNAME} ${VERSION}${reset}
+${cyan}
+Combine videos. Provide one or more filenames of videos to be combined; the
+resulting video file will be named 'joined.mp4' (regardless of the input
+formats).${reset}
+
+$(usage)
+
+_EOF_
+}
+
+# Options and flags from command line
+while getopts :-:h OPT; do
+  if [ "$OPT" = "-" ]; then
+    OPT="${OPTARG%%=*}"     # extract long option name
+    OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)
+    OPTARG="${OPTARG#=}"    # remove assigning `=`
+  fi
+  case "$OPT" in
+    h | help)
+      help_message
+      graceful_exit
+      ;;
+    ??*) # bad long option
+      usage >&2
+      error_exit "Unknown option --$OPT"
+      ;;
+    ?) # bad short option
+      usage >&2
+      error_exit "Unknown option -$OPTARG"
+      ;;
+  esac
+done
+shift $((OPTIND - 1)) # remove parsed options and args from $@ list
+
+# Program variables
+file=$1
+if [[ ! $file ]]; then
+  usage >&2
+  error_exit "At least one filename must be provided."
+fi
+
+# Dependencies
+ffmpeg=$(command -v ffmpeg)
+if [[ ! $ffmpeg ]]; then
+  error_exit "Ffmpeg must be installed <https://ffmpeg.org>. Aborting."
+fi
+
+printf "%s\n" "${green}Generating list of input videos...${reset}"
+
 echo "# Videos to merge" >concat.txt
 
 for file in "$@"; do
   echo "file '$file'" >>concat.txt
 done
 
-echo "\e[0;92mUsing ffmpeg to merge files...\e[0m"
+printf "%s\n" "${green}Merging videos...${reset}"
 
-ffmpeg -v quiet -stats -f concat -i concat.txt -c copy joined.mp4
+"$ffmpeg" -v quiet -stats -f concat -i concat.txt -c copy ./joined.mp4
 
 rm concat.txt
-echo "\e[0;92mVideos merged! File: \e[0;94mjoined.mp4\e[0m"
+
+printf "%s\n" "${green}Videos merged. File: ${reset}${bold}joined.mp4${reset}"

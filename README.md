@@ -80,6 +80,15 @@ All scripts have [shellcheck](https://www.shellcheck.net) run on them with every
 save and are auto-formatted with [`shfmt`](https://github.com/mvdan/sh) using
 the [Sublime Text plugin](https://github.com/soifou/sublime-shfmt).
 
+# Other resources
+
+You may also be interested in my
+[local dotfiles](https://github.com/rootwork/dotfiles/tree/local-nix) (Linux),
+which also has flavors in
+[Mac](https://github.com/rootwork/dotfiles/tree/local-mac) and
+[Windows](https://github.com/rootwork/dotfiles/tree/local-win), as well as a
+[hosted (Linux) setup](https://github.com/rootwork/dotfiles/tree/hosted).
+
 # License
 
 GPLv3. See [LICENSE](LICENSE).

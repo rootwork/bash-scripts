@@ -21,6 +21,7 @@
 # USAGE
 #
 # $ ./minsmvid.sh [--rate=<BITRATE>] <FILE>
+# $ ./fadevid.sh [-h|--help]
 
 # Revision history:
 # 2021-10-18  Bitrate is now optional; if not provided at runtime the script

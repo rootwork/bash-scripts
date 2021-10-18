@@ -25,7 +25,7 @@
 
 # USAGE
 #
-# $ ./minvid.sh <FILE> <START> [END]
+# $ ./trimvid.sh <FILE> <START> [END]
 
 # EXAMPLES
 #

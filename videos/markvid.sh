@@ -43,8 +43,6 @@
 #
 # https://gist.github.com/bennylope/d5d6029fb63648582fed2367ae23cfd6
 # https://ffmpeg.org/ffmpeg-filters.html#overlay-1
-#
-# This script requires ffmpeg to be installed.
 
 # Revision history:
 # 2021-10-15  Adding help, dependency checks, and other standardization (1.1)

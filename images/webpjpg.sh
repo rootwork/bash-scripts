@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ---------------------------------------------------------------------------
-# webpjpg - Convert webp images to lossless PNG first, then to JPEG, because
-# neither imagemagick nor dwebp supports a direct converstion from webp to JPEG.
+# webpjpg - Convert WebP images to lossless PNG first, then to JPEG, because
+# neither imagemagick nor dwebp supports a direct converstion from WebP to JPEG.
 #
 # This script requires imagemagick <https://imagemagick.org> and
 # libwebp <https://developers.google.com/speed/webp/download> to be installed.
@@ -83,8 +83,8 @@ help_message() {
 
 ${bold}${PROGNAME} ${VERSION}${reset}
 ${cyan}
-Convert webp images to lossless PNG first, then to JPEG, because neither
-imagemagick nor dwebp supports a direct converstion from webp to JPEG.${reset}
+Convert WebP images to lossless PNG first, then to JPEG, because neither
+imagemagick nor dwebp supports a direct converstion from WebP to JPEG.${reset}
 
 $(usage)
 

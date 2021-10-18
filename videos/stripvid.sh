@@ -84,6 +84,9 @@ Strip metadata from a video.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 _EOF_
 }
 

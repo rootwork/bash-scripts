@@ -88,6 +88,9 @@ imagemagick nor dwebp supports a direct converstion from webp to JPEG.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 _EOF_
 }
 

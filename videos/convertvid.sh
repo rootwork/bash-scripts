@@ -129,6 +129,9 @@ resulting in both smaller and better-quality videos.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 ${bold}Examples:${reset}
 
 Provide either a filename or a file type/extension (e.g. 'wmv'). If a filename

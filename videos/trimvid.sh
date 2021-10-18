@@ -110,6 +110,9 @@ timecode.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 ${bold}Example:${reset}
 
 START format is HH:MM:SS.

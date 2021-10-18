@@ -86,6 +86,9 @@ KB. A value of 2600 might be a helpful starting point.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 _EOF_
 }
 

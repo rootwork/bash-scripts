@@ -85,6 +85,9 @@ Quick copy of any file format to MP4.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 _EOF_
 }
 

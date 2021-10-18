@@ -87,6 +87,9 @@ resulting in both smaller and better-quality videos.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 _EOF_
 }
 

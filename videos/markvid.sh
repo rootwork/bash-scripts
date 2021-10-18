@@ -112,6 +112,9 @@ configuration parameters.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+
 ${bold}Examples:${reset}
 
 Run the script with a path to the video, a path to the watermark file, and the

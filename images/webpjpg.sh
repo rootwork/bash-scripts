@@ -4,7 +4,7 @@
 # webpjpg - Convert webp images to lossless PNG first, then to JPEG, because
 # neither imagemagick nor dwebp supports a direct converstion from webp to JPEG.
 #
-# This script requires imagemagick and
+# This script requires imagemagick <https://imagemagick.org> and
 # libwebp <https://developers.google.com/speed/webp/download> to be installed.
 
 # Copyright 2021, Ivan Boothe <git@rootwork.org>

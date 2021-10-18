@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # ---------------------------------------------------------------------------
-# minsmvid - Reduce video size even more than minvid, with second argument for
-# bitrate, in KB. A value of 2600 might be a helpful starting point.
+# minsmvid - Reduce video size even more than minvid, controlling the bitrate.
 #
 # This script requires ffmpeg to be installed: https://ffmpeg.org
 
@@ -21,16 +20,18 @@
 
 # USAGE
 #
-# $ ./minsmvid.sh <FILE> <BITRATE>
+# $ ./minsmvid.sh [--rate=<BITRATE>] <FILE>
 
 # Revision history:
+# 2021-10-18  Bitrate is now optional; if not provided at runtime the script
+#             will inform you of the current bitrate to give some guidance (1.2)
 # 2021-10-15  Adding help, dependency checks, and other standardization (1.1)
 # 2021-10-11  Initial release (1.0)
 # ---------------------------------------------------------------------------
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.1"
+VERSION="1.2"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
@@ -70,7 +71,7 @@ signal_exit() {
 # Usage: Separate lines for mutually exclusive options.
 usage() {
   printf "%s\n" \
-    "${bold}Usage:${reset} ${PROGNAME} <FILE> <BITRATE>"
+    "${bold}Usage:${reset} ${PROGNAME} [--rate=<BITRATE>] <FILE>"
   printf "%s\n" \
     "       ${PROGNAME} [-h|--help]"
 }
@@ -81,18 +82,23 @@ help_message() {
 
 ${bold}${PROGNAME} ${VERSION}${reset}
 ${cyan}
-Reduce video size even more than minvid, with second argument for bitrate, in
-KB. A value of 2600 might be a helpful starting point.${reset}
+Reduce video size even more than minvid, controlling the bitrate.${reset}
 
 $(usage)
 
 ${bold}Options:${reset}
 -h, --help    Display this help message and exit.
+--rate=       Provide the bitrate, in kbps.
 
 _EOF_
 }
 
 # Options and flags from command line
+needs_arg() {
+  if [ -z "$OPTARG" ]; then
+    error_exit "Error: Argument required for option '$OPT' but none provided."
+  fi
+}
 while getopts :-:h OPT; do
   if [ "$OPT" = "-" ]; then
     OPT="${OPTARG%%=*}"     # extract long option name
@@ -103,6 +109,10 @@ while getopts :-:h OPT; do
     h | help)
       help_message
       graceful_exit
+      ;;
+    r | rate)
+      needs_arg
+      rate="$OPTARG"
       ;;
     ??*) # bad long option
       usage >&2
@@ -120,14 +130,9 @@ shift $((OPTIND - 1)) # remove parsed options and args from $@ list
 file=$1
 name="${1%.*}"
 ext="${1##*.}"
-bitrate=$2
 if [[ ! $file ]]; then
   usage >&2
   error_exit "Filename must be provided."
-fi
-if [[ ! $bitrate ]]; then
-  usage >&2
-  error_exit "Bitrate must be provided."
 fi
 
 # Dependencies
@@ -135,14 +140,28 @@ ffmpeg=$(command -v ffmpeg)
 if [[ ! $ffmpeg ]]; then
   error_exit "Ffmpeg must be installed <https://ffmpeg.org>. Aborting."
 fi
+ffprobe=$(command -v ffprobe)
+if [[ ! $ffprobe ]]; then
+  error_exit "Ffprobe must be available and does not appear to be. Try reinstalling ffmpeg <https://ffmpeg.org>. Aborting."
+fi
 
 if [ -f "${file}" ]; then # Make sure video file exists
+
+  if [[ ! $rate ]]; then
+    curr_rate=$("$ffprobe" -i "$file" -v quiet -select_streams v:0 -show_entries stream=bit_rate -hide_banner -of default=noprint_wrappers=1:nokey=1)
+    curr_rate_kbps=$(("$curr_rate" / 1000))
+    printf "%s\n" "${yellow}The current bitrate of ${file} is ${reset}${bold}${white}${curr_rate_kbps} kbps${reset}${yellow}. What rate do you want the new video to be (in kbps)?${reset}"
+    read -r bitrate
+  else
+    bitrate=$rate
+  fi
+
   printf "%s\n" "${green}Running first of two passes.${reset}"
   "$ffmpeg" -v quiet -stats -y -i "$file" -tune film -preset slower -map_metadata -1 -map_chapters -1 -c:v libx264 -b:v "$bitrate"k -pass 1 -vsync cfr -f null /dev/null &&
     printf "%s\n" "${green}Running second of two passes.${reset}"
   "$ffmpeg" -v quiet -stats -i "$file" -c:v libx264 -b:v "$bitrate"k -pass 2 -c:a aac -b:a 128k -movflags +faststart "$name"-minsm."$ext"
   rm ffmpeg2pass-0.log.mbtree && rm ffmpeg2pass-0.log
-  printf "%s\n" "${green}Video minified. File: ${reset}${bold}${name}-minsm.${ext}${reset}${reset}"
+  printf "%s\n" "${green}Video minified with a bitrate of ${bitrate} kbps. File: ${reset}${bold}${name}-minsm.${ext}${reset}${reset}"
 else
   error_exit "Video file '${file}' not found."
 fi

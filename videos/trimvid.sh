@@ -121,17 +121,17 @@ HH:MM:SS, in which case it acts as a stop position.
 
 Trim video.mp4 beginning at 1 minute, 29 seconds to the end of the video:
 
-${green}$ ./trimvid.sh video.mp4 00:01:29${reset}
+${green}$ ${PROGNAME} video.mp4 00:01:29${reset}
 
 Trim video.mp4 beginning at 1 minute, 29 seconds and lasting for 90 seconds (one
 and a half minutes):
 
-${green}$ ./trimvid.sh video.mp4 00:01:29 90${reset}
+${green}$ ${PROGNAME} video.mp4 00:01:29 90${reset}
 
 Trim video.mp4 beginning at 1 minute, 29 seconds and ending at 1 hour, 52
 minutes, 56 seconds:
 
-${green}$ ./trimvid.sh video.mp4 00:01:29 01:52:56${reset}
+${green}$ ${PROGNAME} video.mp4 00:01:29 01:52:56${reset}
 
 _EOF_
 }

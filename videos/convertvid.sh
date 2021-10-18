@@ -137,11 +137,11 @@ convert all matching files in the current directory.
 
 Converting one file named example.mpg:
 
-${green}$ ./convertvid.sh example.mpg${reset}
+${green}$ ${PROGNAME} example.mpg${reset}
 
 Converting all WMV files in the current directory:
 
-${green}$ ./convertvid.sh wmv${reset}
+${green}$ ${PROGNAME} wmv${reset}
 
 Note that providing '*' as a file format won't work; you'll need to provide
 file formats one at a time that exist in the current directory.

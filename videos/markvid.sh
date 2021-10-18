@@ -118,7 +118,7 @@ Run the script with a path to the video, a path to the watermark file, and the
 distance (in pixels) you want the watermark to appear from the lower-right
 corner.
 
-${green}$ ./markvid.sh video.mp4 watermark.png 10${reset}
+${green}$ ${PROGNAME} video.mp4 watermark.png 10${reset}
 > [ffmpeg reports conversion progress]
 > Done. Video created at video-marked.mp4
 

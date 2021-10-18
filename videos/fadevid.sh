@@ -23,10 +23,10 @@
 
 # USAGE
 #
-# $ ./fadevid.sh <FILE>
+# $ ./fadevid.sh [--time=S] <FILE>
 # $ ./fadevid.sh [-h|--help]
 
-# EXAMPLE
+# EXAMPLES
 #
 # Provide a filename, and when the script asks you how long the fade should
 # last, respond with a number.
@@ -36,6 +36,12 @@
 #   $ 5
 #   > [ffmpeg reports conversion progress]
 #   > Done. Video created at example-faded.mp4
+#
+# Or provide both the filename and the length of the fade, in seconds.
+#
+#   $ ./fadevid.sh --time=5 example.mp4
+#   > [ffmpeg reports conversion progress]
+#   > Done. Video created at example-faded.mp4
 
 # RESOURCES
 #
@@ -43,13 +49,14 @@
 # https://video.stackexchange.com/q/28269
 
 # Revision history:
+# 2021-10-18  Adding time as a command-line option (1.2)
 # 2021-10-15  Adding help, dependency checks, and other standardization (1.1)
 # 2021-10-06  Initial release (1.0)
 # ---------------------------------------------------------------------------
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.1"
+VERSION="1.2"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
@@ -89,7 +96,7 @@ signal_exit() {
 # Usage: Separate lines for mutually exclusive options.
 usage() {
   printf "%s\n" \
-    "${bold}Usage:${reset} ${PROGNAME} <FILE>"
+    "${bold}Usage:${reset} ${PROGNAME} [--time=S] <FILE>"
   printf "%s\n" \
     "       ${PROGNAME} [-h|--help]"
 }
@@ -107,14 +114,24 @@ with "-faded" appended to the file name.${reset}
 
 $(usage)
 
+${bold}Options:${reset}
+-h, --help    Display this help message and exit.
+--time=       Provide the length of the fade, in seconds.
+
 ${bold}Example:${reset}
 
 Provide a filename, and when the script asks you how long the fade should
 last, respond with a number.
 
-${green}$ ./fadevid.sh example.mp4${reset}
+${green}$ ${PROGNAME} example.mp4${reset}
 > Video length is 122.029413 seconds. How long do you want each fade to last? (in seconds)
 ${green}$ 5${reset}
+> [ffmpeg reports conversion progress]
+> Done. Video created at example-faded.mp4
+
+Or provide both the filename and the length of the fade, in seconds.
+
+${green}$ ${PROGNAME} --time=5 example.mp4${reset}
 > [ffmpeg reports conversion progress]
 > Done. Video created at example-faded.mp4
 
@@ -122,7 +139,12 @@ _EOF_
 }
 
 # Options and flags from command line
-while getopts :-:h OPT; do
+needs_arg() {
+  if [ -z "$OPTARG" ]; then
+    error_exit "Error: Argument required for option '$OPT' but none provided."
+  fi
+}
+while getopts :t-:h OPT; do
   if [ "$OPT" = "-" ]; then
     OPT="${OPTARG%%=*}"     # extract long option name
     OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)
@@ -132,6 +154,10 @@ while getopts :-:h OPT; do
     h | help)
       help_message
       graceful_exit
+      ;;
+    t | time)
+      needs_arg
+      time="$OPTARG"
       ;;
     ??*) # bad long option
       usage >&2
@@ -164,11 +190,15 @@ if [[ ! $ffprobe ]]; then
   error_exit "Ffprobe must be available and does not appear to be. Try reinstalling ffmpeg <https://ffmpeg.org>. Aborting."
 fi
 
-vidlength=$("$ffprobe" -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "$file")
-
 if [ -f "${file}" ]; then # Make sure video file exists
-  printf "%s\n" "${yellow}Video length is ${reset}${vidlength} seconds${yellow} How long do you want each fade to last? (in seconds)${reset}"
-  read -r duration
+  vidlength=$("$ffprobe" -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "$file")
+
+  if [[ ! $time ]]; then
+    printf "%s\n" "${yellow}Video length is ${reset}${vidlength} seconds${yellow} How long do you want each fade to last? (in seconds)${reset}"
+    read -r duration
+  else
+    duration=$time
+  fi
 
   outpoint=$(echo "$vidlength - $duration" | bc)
 

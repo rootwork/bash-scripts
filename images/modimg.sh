@@ -277,3 +277,17 @@ for f in $webp; do
     fi
   fi
 done
+
+# Create AVIF formats.
+for f in ${files[*]}; do
+  filename=$(basename "$f")
+  newfile="${output}/${filename%.*}.avif"
+  if [ -e "$f" ]; then
+    if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
+      npx avif --input="$f" --output="${output}"
+      if [[ ! $quiet_mode ]]; then
+        printf "%s\n" "${green}Created ${newfile}${reset}"
+      fi
+    fi
+  fi
+done

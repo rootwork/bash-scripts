@@ -8,6 +8,9 @@
 # Modern formats will only be created if they don't exist, meaning you can have
 # this run as part of CI (for instance on each deployment of a static site).
 #
+# For a tool with more options depending on the image, see:
+# https://github.com/Blobfolio/refract
+#
 # This script requires the following tools:
 # imagemagick <https://imagemagick.org>
 # libwebp <https://developers.google.com/speed/webp/download>
@@ -48,6 +51,7 @@
 # $ ./minpic.sh --quiet photos
 
 # RESOURCES
+# https://github.com/Blobfolio/refract
 #
 # WebP:
 # https://en.wikipedia.org/wiki/WebP
@@ -262,7 +266,7 @@ for f in "$path"/**/*.{jpg,jpeg,png,gif}; do
   fi
 done
 
-# Create WebP formats.
+# Create WebP images.
 # Omit GIFs because they're likely to be larger than the equivalent WebP.
 webp=$( (IFS=$'\n' && echo "${files[*]}") | grep -v '.gif$')
 for f in $webp; do
@@ -278,7 +282,7 @@ for f in $webp; do
   fi
 done
 
-# Create AVIF formats.
+# Create AVIF images.
 for f in ${files[*]}; do
   filename=$(basename "$f")
   newfile="${output}/${filename%.*}.avif"
@@ -291,3 +295,6 @@ for f in ${files[*]}; do
     fi
   fi
 done
+
+# Create JXL images.
+# @TODO using libjxl https://gitlab.com/wg1/jpeg-xl

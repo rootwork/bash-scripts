@@ -266,7 +266,7 @@ done
 # Omit GIFs because they're likely to be larger than the equivalent WebP.
 webp=$( (IFS=$'\n' && echo "${files[*]}") | grep -v '.gif$')
 for f in $webp; do
-  filename=$(basename "$filename")
+  filename=$(basename "$f")
   newfile="${output}/${filename%.*}.webp"
   if [ -e "$f" ]; then
     if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.

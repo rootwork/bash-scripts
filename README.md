@@ -12,6 +12,10 @@
   by filename.
 - [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the
   web. Really just a more convenient wrapper for Trimage.
+- [modimg.sh](images/modimg.sh): Create optimized image formats for the web.
+  Generate WebP, AVIF, and JXL images for browsers that support them, then
+  optimize the fallback JPEG, PNG and GIF images. See the file for additional
+  options and details.
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first,
   then to JPEG.
 

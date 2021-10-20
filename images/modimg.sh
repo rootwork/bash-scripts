@@ -130,11 +130,12 @@ error_exit() {
   printf "%s\n" "${PROGNAME}: ${error_message:-"${red}Unknown Error${reset}"}" >&2
   exit 1
 }
-# Use as following:
-# command || error_exit "command failed in line $LINENO"
 
 graceful_exit() {
-  # Optionally provide file cleanup here.
+  rm=$(command -v rm)
+  for f in ${files_created[*]}; do
+    "$rm" "$f"
+  done
   exit 0
 }
 
@@ -147,7 +148,7 @@ signal_exit() {
       error_exit "${yellow}Program interrupted by user.${reset}"
       ;;
     TERM)
-      printf "\n%s\n" "${red}$PROGNAME: Program terminated.${reset}" >&2
+      printf "\n%s\n" "${red}$PROGNAME: Program terminated. Removing generated files...${reset}" >&2
       graceful_exit
       ;;
     *)
@@ -312,6 +313,7 @@ files=''
 for f in "$path"/**/*.{jpg,jpeg,png,gif}; do
   files+=("$f")
 done
+files_created=''
 # Optimize: All
 path_optimize=${files[*]}
 # WebP: All but GIF, since they're likely to be smaller than the equivalent WebP
@@ -321,7 +323,7 @@ path_avif=${files[*]}
 # JXL: All
 path_jxl=${files[*]}
 
-# Optional dependencies, depending on operation(s)
+# Dependencies, depending on operation(s)
 mogrify=$(command -v mogrify)
 
 cwebp=$(command -v cwebp)
@@ -376,7 +378,7 @@ if [[ $optimize || $size ]]; then
     fi
     for f in $path_optimize; do
       if [ -e "$f" ]; then
-        "$mogrify""${opt[@]}" "$f" -path "$output"
+        "$mogrify""${opt[@]}" "$f" -path "$output" || error_exit "command failed in line $LINENO"
         if [[ ! $quiet_mode ]]; then
           printf "%s\n" "${green}Processed fallback image ${f}${reset}"
         fi
@@ -395,7 +397,8 @@ if [[ $gen_webp ]]; then
       newfile="${output}/${filename%.*}.webp"
       if [ -e "$f" ]; then
         if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
-          $cwebp -quiet "$f" -o "${newfile}"
+          $cwebp -quiet "$f" -o "${newfile}" || error_exit "command failed in line $LINENO"
+          files_created+=("$newfile")
           if [[ ! $quiet_mode ]]; then
             printf "%s\n" "${green}Created ${newfile}${reset}"
           fi
@@ -417,11 +420,12 @@ if [[ $gen_avif ]]; then
         if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
           # NPM-based AVIF encoding
           if [[ $npx ]]; then
-            "$npx" "$avif" --input="$f" --output="${output}"
+            "$npx" "$avif" --input="$f" --output="${output}" || error_exit "command failed in line $LINENO"
           # Go-based AVIF encoding
           else
-            "$avif" -e="$f" -o="${output}"
+            "$avif" -e="$f" -o="${output}" || error_exit "command failed in line $LINENO"
           fi
+          files_created+=("$newfile")
 
           if [[ ! $quiet_mode ]]; then
             printf "%s\n" "${green}Created ${newfile}${reset}"
@@ -442,7 +446,8 @@ if [[ $gen_jxl ]]; then
       newfile="${output}/${filename%.*}.jxl"
       if [ -e "$f" ]; then
         if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
-          "$jxl" "$f" "${newfile}"
+          "$jxl" "$f" "${newfile}" || error_exit "command failed in line $LINENO"
+          files_created+=("$newfile")
           if [[ ! $quiet_mode ]]; then
             printf "%s\n" "${green}Created ${newfile}${reset}"
           fi

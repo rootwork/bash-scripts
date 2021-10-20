@@ -6,15 +6,36 @@
 # PNG and GIF images.
 #
 # Modern formats will only be created if they don't exist, meaning you can have
-# this run as part of CI (for instance on each deployment of a static site).
+# this run as part of CI (for instance on each deployment of a static site). You
+# can choose which formats to generate, and whether to optimize the fallback
+# images, on each run.
 #
-# For a tool with more options depending on the image, see:
-# https://github.com/Blobfolio/refract
+# If a given format is requested and a library cannot be found for that format,
+# the format will be skipped and reported to you (unless you turn on --quiet).
 #
-# This script requires the following tools:
-# imagemagick <https://imagemagick.org>
-# libwebp <https://developers.google.com/speed/webp/download>
-# avif-cli <https://github.com/lovell/avif-cli>
+# By default, optimized images will overwrite un-optimized images, unless you
+# set a different directory with the --output option.
+#
+# This script requires the following tools depending on which options you use:
+#
+# For image optimization and resizing, Imagemagick <https://imagemagick.org>,
+# which you likely already have.
+#
+# For WebP encoding, libwebp <https://developers.google.com/speed/webp/download>
+#
+# For AVIF encoding, there aren't a lot of great options that don't require
+# building libaom with avifenc from source. Consequently this tool is designed
+# to use either the NPM-based AVIF-CLI <https://github.com/lovell/avif-cli> or
+# the Go-based Go-AVIF <https://github.com/Kagami/go-avif>, so install one of
+# these. (Other options considered included Squoosh-CLI, which had significant
+# overhead if used only for AVIF encoding, and cavif, which at the time of
+# development was broken.)
+#
+# For JXL (JPEG-XL) encoding, you can use libvips
+# <https://github.com/libvips/libvips/releases>, but it must be at least
+# v8.11.0, which is currently newer than a lot of systems have (for instance
+# Debian stable). If libvips is not installed, this tool will fall back to
+# imagemagick, which will write JXLs but will not save much in file size.
 
 # Copyright 2021 Ivan Boothe <git@rootwork.org>
 
@@ -31,27 +52,29 @@
 
 # USAGE
 #
-# $ ./modimg.sh [-q|--quiet] [-o|--overwrite] <DIR> [NEWSIZE]
+# $ ./modimg.sh [-f|--full] [-q|--quiet] [--output=<DIR>] [--size=<PX>] <DIR>
+# $ ./modimg.sh [-o|--optimize] [-a|--avif] [-j|--jxl] [-w|--webp] [-q|--quiet] [-p=<DIR>] [-s=<PX>] <DIR>
 # $ ./modimg.sh [-h|--help]
 
 # EXAMPLES
 #
 # Optimize and create new formats from all images in the current directory:
-# $ ./modimg.sh .
+# $ ./modimg.sh -f .
 #
-# Do the same, but place new images and optimized images in this directory,
-# overwriting existing images:
-# $ ./modimg.sh -o .
+# Create WebP images, do not optimize fallback images, and report nothing but
+# errors:
+# $ ./modimg.sh -w --quiet .
 #
-# Do the same to all images in the "pictures" category, and resize the new
-# images to be a maximum of 1000 pixels wide:
-# $ ./minpic.sh pictures 1000
+# Create WebP and AVIF images, and place them with new optimized versions of
+# fallback images into the "modern" subdirectory of the current directory:
+# $ ./modimg.sh -wao --output=modern .
 #
-# Don't report anything but errors:
-# $ ./minpic.sh --quiet photos
+# Optimize and create new formats for all images in the "pictures" directory,
+# resize them to a maximum width of 1000 pixels, and place them in the
+# "new_pictures" subdirectory of "pictures":
+# $ ./minpic.sh -f -s=1000 --output=new_pictures pictures
 
 # RESOURCES
-# https://github.com/Blobfolio/refract
 #
 # WebP:
 # https://en.wikipedia.org/wiki/WebP
@@ -71,14 +94,23 @@
 # https://cloudinary.com/blog/how_jpeg_xl_compares_to_other_image_codecs
 # https://caniuse.com/jpegxl
 
+# ALTERNATIVE TOOLS:
+# https://github.com/Blobfolio/refract
+# https://www.npmjs.com/package/@squoosh/cli
+# https://www.npmjs.com/package/next-gen-images-webpack-plugin
+# https://github.com/h2non/bimg
+# https://github.com/h2non/imaginary
+# https://pypi.org/project/imagecodecs
+
 # Revision history:
-# 2021-10-18  Cleanup, standardization, and addition of JXL options (1.1)
+# 2021-10-19  Improvement of option flags and addition of JXL format (1.2)
+# 2021-10-18  Cleanup and standardization (1.1)
 # 2021-08-24  Initial release (1.0)
 # ---------------------------------------------------------------------------
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.1"
+VERSION="1.2"
 black=$(tput setaf 0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -127,7 +159,9 @@ signal_exit() {
 # Usage: Separate lines for mutually exclusive options.
 usage() {
   printf "%s\n" \
-    "${bold}Usage:${reset} ${PROGNAME} [-o|--overwrite] [-m|--modern-only] <DIR>"
+    "${bold}Usage:${reset} ${PROGNAME} [-f|--full] [-q|--quiet] [-p=<DIR>] [--size=<PX>] <DIR>"
+  printf "%s\n" \
+    "       ${PROGNAME} [-o|--optimize] [-a|--avif] [-j|--jxl] [-w|--webp] [-q|--quiet] [-p=<DIR>] [-s=<PX>] <DIR>"
   printf "%s\n" \
     "       ${PROGNAME} [-h|--help]"
 }
@@ -143,41 +177,67 @@ for browsers that support them, then optimize the fallback JPEG, PNG and GIF
 images.
 
 Modern formats will only be created if they don't exist, meaning you can have
-this run as part of CI (for instance on each deployment of a static site).
+this run as part of CI (for instance on each deployment of a static site). You
+can choose which formats to generate, and whether to optimize the fallback
+images, on each run.
 
-By default, images will be created in the subdirectory "modimg" unless the
---overwrite flag is used.${reset}
+If a given format is requested and a library cannot be found for that format,
+the format will be skipped and reported to you (unless you turn on --quiet).
+
+By default, optimized images will overwrite un-optimized images, unless you set
+a different directory with the --output option.${reset}
 
 $(usage)
 
 ${bold}Options:${reset}
--h, --help         Display this help message and exit.
--q, --quiet        Quiet mode. Do not report anything but errors.
--o, --overwrite    Place any new images in the existing directory, and overwrite
-                   any optimized images, instead of placing new and optimized
-                   images in the "modimg" subdirectory.
+-h, --help       Display this help message and exit.
+-q, --quiet      Quiet mode. Do not report skipped options or results.
+
+-o, --optimize   Include image optimization. Requires imagemagick.
+-a, --avif       Generate AVIF images. Requires avif-cli (npm) or go-avif.
+-j, --jxl        Generate JXL (JPEG-XL) images. Requires imagemagick,
+                 libvips v8.11.0+, or Python imagecodecs with the jpegxl
+                 extension.
+-w, --webp       Generate WebP images. Requires libwebp.
+
+-f, --full       Shorthand option that optimizes images and generates all
+                 available image formats.
+
+-s=<PX>          Resize all images to a MAXIMUM of this value, in pixels.
+                 Requires imagemagick.
+
+-p=<DIR>         Output for new images and optimized versions of existing
+                 images. Defaults to the current directory, overwriting
+                 un-optimized images.
 
 ${bold}Examples:${reset}
 
 Optimize and create new formats from all images in the current directory:
-${green}$ ${PROGNAME} .${reset}
+${green}$ ${PROGNAME} -f .${reset}
 
-Do the same, but place new images and optimized images in this directory,
-overwriting existing images:
-${green}$ ${PROGNAME} -o .${reset}
+Create WebP images, do not optimize fallback images, and report nothing but
+errors:
+${green}$ ${PROGNAME} -w --quiet .${reset}
 
-Do the same to all images in the "pictures" category, and resize the new images
-to be a maximum of 1000 pixels wide:
-${green}$ ${PROGNAME} pictures 1000${reset}
+Create WebP and AVIF images, and place them with new optimized versions of
+fallback images into the "modern" subdirectory of the current directory:
+${green}$ ${PROGNAME} -wao --output=modern .${reset}
 
-Don't report anything but errors:
-${green}$ ${PROGNAME} --quiet photos${reset}
+Optimize and create new formats for all images in the "pictures" directory,
+resize them to a maximum width of 1000 pixels, and place them in the
+"new_pictures" subdirectory of "pictures":
+${green}$ ${PROGNAME} -f -s=1000 --output=new_pictures pictures${reset}
 
 _EOF_
 }
 
 # Options and flags from command line
-while getopts :-:oqh OPT; do
+needs_arg() {
+  if [ -z "$OPTARG" ]; then
+    error_exit "Error: Argument required for option '$OPT' but none provided."
+  fi
+}
+while getopts :-ps:oajwfqh OPT; do
   # Using help flag only? The above should be:
   # while getopts :-:h OPT; do
   if [ "$OPT" = "-" ]; then # long option: reformulate OPT and OPTARG
@@ -195,8 +255,31 @@ while getopts :-:oqh OPT; do
     q | quiet)
       quiet_mode="-quiet"
       ;;
-    o | overwrite)
-      overwrite=true
+    o | optimize)
+      optimize=true
+      ;;
+    a | avif)
+      gen_avif=true
+      ;;
+    j | jxl)
+      gen_jxl=true
+      ;;
+    w | webp)
+      gen_webp=true
+      ;;
+    f | full)
+      optimize=true
+      gen_avif=true
+      gen_jxl=true
+      gen_webp=true
+      ;;
+    s | size)
+      needs_arg
+      size="$OPTARG"
+      ;;
+    p | output)
+      needs_arg
+      output="$OPTARG"
       ;;
     ??*) # bad long option
       usage >&2
@@ -210,35 +293,64 @@ while getopts :-:oqh OPT; do
 done
 shift $((OPTIND - 1)) # remove parsed options and args from $@ list
 
-# Sanitize directory name
+# Make sure there's at least one operation
+if [[ ! $optimize && ! $size && ! $gen_avif && ! $gen_jxl && ! $gen_webp ]]; then
+  usage >&2
+  error_exit "No operations requested."
+fi
+
+# Sanitize directory names
 path=$1
 if [[ ! $path ]]; then
   usage >&2
   error_exit "Directory must be provided."
 fi
 [[ "$path" =~ ^[./].*$ ]] || path="./$path"
+
+# Create file arrays
 files=''
+for f in "$path"/**/*.{jpg,jpeg,png,gif}; do
+  files+=("$f")
+done
+# Optimize: All
+path_optimize=${files[*]}
+# WebP: All but GIF, since they're likely to be smaller than the equivalent WebP
+path_webp=$( (IFS=$'\n' && echo "${files[*]}") | grep -v '.gif$')
+# AVIF: All
+path_avif=${files[*]}
+# JXL: All
+path_jxl=${files[*]}
 
-# Get new size, if set
-size=$2
-
-# Dependencies
+# Optional dependencies, depending on operation(s)
 mogrify=$(command -v mogrify)
-if [[ ! $mogrify ]]; then
-  error_exit "Imagemagick's mogrify must be available and does not appear to be. Try reinstalling Imagemagick <https://imagemagick.org>. Aborting."
-fi
+
 cwebp=$(command -v cwebp)
-if [[ ! $cwebp ]]; then
-  error_exit "libwebp must be installed <https://developers.google.com/speed/webp/download>. Aborting."
-fi
+
+npx=$(command -v npx) # Indicates NPM rather than Go-based AVIF encoding.
 avif=$(command -v avif)
-if [[ ! $avif ]]; then
-  error_exit "avif-cli must be installed <https://github.com/lovell/avif-cli>. Aborting."
+
+convert=$(command -v convert)
+jxl="$convert"
+vips=$(command -v vips)
+# Make sure libvips is at least v8.11.0
+if [[ $vips ]]; then
+  vips_v=$($vips --version)
+  vips_regex="\b([0-9]+)\.([0-9]+)\.([0-9]+)\b"
+  if [[ $vips_v =~ $vips_regex ]]; then
+    vips_major="${BASH_REMATCH[1]}"
+    vips_minor="${BASH_REMATCH[2]}"
+    # vips_release="${BASH_REMATCH[3]}"
+  fi
+  if [[ $vips_major -ge "8" && $vips_minor -ge "11" ]]; then
+    jxl="$vips copy"
+  else
+    jxl="$convert"
+  fi
 fi
 
 # Create directory for output
-if [[ ! $overwrite ]]; then
-  output="$path/modimg"
+if [[ $output ]]; then
+  output="$path/$output"
   mkdir -p "$output"
 else
   output=$path
@@ -249,52 +361,95 @@ shopt -s nullglob
 shopt -s globstar
 
 # Optimize existing images
-if [[ $size ]]; then
-  size=$size\>
-  opt=(-strip -thumbnail "${size}")
-else
-  opt=(-strip)
+if [[ $optimize || $size ]]; then
+  if [[ $mogrify ]]; then
+    opt=''
+    if [[ $optimize ]]; then
+      opt+=(-strip)
+    fi
+    if [[ $size ]]; then
+      size=$size\>
+      opt+=(-thumbnail "${size}")
+    fi
+    if [[ $quiet_mode ]]; then
+      opt+=(-quiet)
+    fi
+    for f in $path_optimize; do
+      if [ -e "$f" ]; then
+        "$mogrify""${opt[@]}" "$f" -path "$output"
+        if [[ ! $quiet_mode ]]; then
+          printf "%s\n" "${green}Processed fallback image ${f}${reset}"
+        fi
+      fi
+    done
+  else
+    printf "%s\n" "${yellow}${bold}Optimization and/or resizing skipped:${reset}${yellow} Imagemagick's mogrify is not available and is required for image optimization and resizing. Try reinstalling Imagemagick <https://imagemagick.org>"
+  fi
 fi
 
-for f in "$path"/**/*.{jpg,jpeg,png,gif}; do
-  if [ -e "$f" ]; then
-    "$mogrify" "${opt[@]}" -path "$output" "$f"
-    files+=("$f")
-    if [[ ! $quiet_mode ]]; then
-      printf "%s\n" "${green}Optimized ${f}${reset}"
-    fi
-  fi
-done
-
 # Create WebP images.
-# Omit GIFs because they're likely to be larger than the equivalent WebP.
-webp=$( (IFS=$'\n' && echo "${files[*]}") | grep -v '.gif$')
-for f in $webp; do
-  filename=$(basename "$f")
-  newfile="${output}/${filename%.*}.webp"
-  if [ -e "$f" ]; then
-    if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
-      cwebp -quiet "$f" -o "${newfile}"
-      if [[ ! $quiet_mode ]]; then
-        printf "%s\n" "${green}Created ${newfile}${reset}"
+if [[ $gen_webp ]]; then
+  if [[ $cwebp ]]; then
+    for f in $path_webp; do
+      filename=$(basename "$f")
+      newfile="${output}/${filename%.*}.webp"
+      if [ -e "$f" ]; then
+        if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
+          $cwebp -quiet "$f" -o "${newfile}"
+          if [[ ! $quiet_mode ]]; then
+            printf "%s\n" "${green}Created ${newfile}${reset}"
+          fi
+        fi
       fi
-    fi
+    done
+  else
+    printf "%s\n" "${yellow}${bold}WebP skipped:${reset}${yellow} libwebp <https://developers.google.com/speed/webp/download> is required for generation of WebP images and was not found."
   fi
-done
+fi
 
 # Create AVIF images.
-for f in ${files[*]}; do
-  filename=$(basename "$f")
-  newfile="${output}/${filename%.*}.avif"
-  if [ -e "$f" ]; then
-    if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
-      npx avif --input="$f" --output="${output}"
-      if [[ ! $quiet_mode ]]; then
-        printf "%s\n" "${green}Created ${newfile}${reset}"
+if [[ $gen_avif ]]; then
+  if [[ $avif ]]; then
+    for f in $path_avif; do
+      filename=$(basename "$f")
+      newfile="${output}/${filename%.*}.avif"
+      if [ -e "$f" ]; then
+        if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
+          # NPM-based AVIF encoding
+          if [[ $npx ]]; then
+            "$npx" "$avif" --input="$f" --output="${output}"
+          # Go-based AVIF encoding
+          else
+            "$avif" -e="$f" -o="${output}"
+          fi
+
+          if [[ ! $quiet_mode ]]; then
+            printf "%s\n" "${green}Created ${newfile}${reset}"
+          fi
+        fi
       fi
-    fi
+    done
+  else
+    printf "%s\n" "${yellow}${bold}AVIF skipped:${reset}${yellow} Either Node-based AVIF-CLI <https://github.com/lovell/avif-cli> or Go-based Go-AVIF <https://github.com/Kagami/go-avif> is required for generation of AVIF images and neither was found."
   fi
-done
+fi
 
 # Create JXL images.
-# @TODO using libjxl https://gitlab.com/wg1/jpeg-xl
+if [[ $gen_jxl ]]; then
+  if [[ $jxl ]]; then
+    for f in $path_jxl; do
+      filename=$(basename "$f")
+      newfile="${output}/${filename%.*}.jxl"
+      if [ -e "$f" ]; then
+        if [ ! -e "${newfile}" ]; then # Create only if file doesn't exist.
+          "$jxl" "$f" "${newfile}"
+          if [[ ! $quiet_mode ]]; then
+            printf "%s\n" "${green}Created ${newfile}${reset}"
+          fi
+        fi
+      fi
+    done
+  else
+    printf "%s\n" "${yellow}${bold}JXL skipped:${reset}${yellow} Imagemagick's convert is not available and is required for generation of JXL images. Try reinstalling Imagemagick <https://imagemagick.org> Alternatively, install libvips v8.11.0+ <https://github.com/libvips/libvips/releases>"
+  fi
+fi

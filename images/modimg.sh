@@ -101,6 +101,7 @@
 # https://github.com/h2non/bimg
 # https://github.com/h2non/imaginary
 # https://pypi.org/project/imagecodecs
+# https://github.com/joppuyo/jpeg-xl-encode
 
 # Revision history:
 # 2021-10-19  Improvement of option flags and addition of JXL format (1.2)

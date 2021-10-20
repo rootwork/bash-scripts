@@ -2,6 +2,9 @@
 
 ## Image sources
 
+- [gif1.gif](gif1.gif): [source](https://filesamples.com/formats/gif)
+- [gif2.gif](gif2.gif):
+  [source](https://file-examples.com/index.php/sample-images-download/sample-gif-download/)
 - [jpeg1.jpg](jpeg1.jpg):
   [source](https://developers.google.com/speed/webp/gallery1)
 - [jpeg2.jpeg](jpeg2.jpeg):

@@ -2,6 +2,10 @@
 
 ## Image sources
 
+- [avif1.avif](avif1.avif):
+  [source](https://github.com/link-u/avif-sample-images)
+- [avif2.avif](avif2.avif):
+  [source](https://github.com/link-u/avif-sample-images)
 - [gif1.gif](gif1.gif): [source](https://filesamples.com/formats/gif)
 - [gif2.gif](gif2.gif):
   [source](https://file-examples.com/index.php/sample-images-download/sample-gif-download/)
@@ -9,6 +13,8 @@
   [source](https://developers.google.com/speed/webp/gallery1)
 - [jpeg2.jpeg](jpeg2.jpeg):
   [source](https://developers.google.com/speed/webp/gallery1)
+- [jxl1.jxl](jxl1.jxl): [source](https://jpegxl.info/jxl-art.html)
+- [jxl2.jxl](jxl2.jxl): [source](https://jpegxl.info/jxl-art.html)
 - [png1.png](png1.png): [source](https://filesamples.com/formats/png)
 - [png2.png](png2.png):
   [source](https://file-examples.com/index.php/sample-images-download/sample-png-download/)

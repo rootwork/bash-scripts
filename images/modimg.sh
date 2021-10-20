@@ -102,6 +102,7 @@
 # https://github.com/h2non/imaginary
 # https://pypi.org/project/imagecodecs
 # https://github.com/joppuyo/jpeg-xl-encode
+# https://github.com/varnav/makejxl
 
 # Revision history:
 # 2021-10-19  Improvement of option flags and addition of JXL format (1.2)

@@ -11,11 +11,14 @@
   a system (Snapfish) that will only order by date, but you want images ordered
   by filename.
 - [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the
-  web. Really just a more convenient wrapper for Trimage.
+  web. Really just a more convenient wrapper for
+  [Trimage](https://trimage.org/).
 - [modimg.sh](images/modimg.sh): Create optimized image formats for the web.
-  Generate WebP, AVIF, and JXL images for browsers that support them, then
-  optimize the fallback JPEG, PNG and GIF images. See the file for additional
-  options and details.
+  Generate [WebP](https://developers.google.com/speed/webp),
+  [AVIF](https://web.dev/compress-images-avif/), and
+  [JXL](https://cloudinary.com/blog/how_jpeg_xl_compares_to_other_image_codecs)
+  images for browsers that support them, then optimize the fallback JPEG, PNG
+  and GIF images. See the file for additional options and details.
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first,
   then to JPEG.
 

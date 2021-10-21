@@ -56,18 +56,19 @@ See [test](test) for sample files and sources.
 
 ## Usage
 
-Download the script files you want and move them to `~/bin`.
+Download the script files you want. You might need to run `chmod +x *.sh` to
+make them executable.
 
-You might need to run `chmod +x *.sh` to make them executable.
-
-If you're not doing so already, [export](https://linuxhint.com/path_in_bash/)
-this directory to your `PATH` in `.bash_profile`, `.bashrc`, `.zshrc`, etc.:
+You can use them only in the folder in which they reside, or you can make them
+system-wide. To do the latter, move them to `~/bin`. Then, if you're not doing
+so already, [export](https://linuxhint.com/path_in_bash/) this directory to your
+`PATH` in `.bash_profile`, `.bashrc`, `.zshrc`, etc.:
 
 ```sh
 export PATH="$HOME/bin:$PATH"
 ```
 
-If you wish, you can add aliases for them, saving three whole characters!
+If you wish, you can also add aliases for them, saving three whole characters!
 
 ```sh
 alias minvid="minvid.sh"

@@ -55,7 +55,9 @@
 # 2021-11-28  Initial release (1.0)
 # ---------------------------------------------------------------------------
 
-# Standard variables
+# Standard settings and variables
+set -euo pipefail
+IFS=$'\n\t'
 PROGNAME=${0##*/}
 VERSION="1.1"
 

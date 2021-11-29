@@ -61,23 +61,10 @@
 # ---------------------------------------------------------------------------
 
 # Standard settings and variables
-set -eo pipefail
+set -euo pipefail
 IFS=$'\n\t'
 PROGNAME=${0##*/}
 VERSION="1.1"
-
-# Dissect and examine filename
-file=${1:-}
-if [[ -z "$file" ]]; then
-  usage >&2
-  error_exit "Filename must be provided."
-fi
-name="${1%.*}"
-
-quantity=${2:-}
-if [[ -z "$quantity" ]]; then
-  quantity=1
-fi
 
 # Colors
 red=$(tput setaf 1)
@@ -168,11 +155,6 @@ _EOF_
 }
 
 # Options and flags from command line
-needs_arg() {
-  if [[ -z "$OPTARG" ]]; then
-    error_exit "Error: Argument required for option '$OPT' but none provided."
-  fi
-}
 # Set flag-created variables to false by default
 quiet_mode=false
 index=false
@@ -184,7 +166,7 @@ while getopts :xo-:qh OPT; do
     OPTARG="${OPTARG#$OPT}"   # extract long option argument (may be empty)
     OPTARG="${OPTARG#=}"      # remove assigning `=`
   else
-    OPTARG="${OPTARG#=}"
+    OPTARG=${OPTARG:-}
   fi
   case "$OPT" in
     h | help)
@@ -221,6 +203,20 @@ fi
 montage=$(command -v montage)
 if [[ ! $montage ]]; then
   error_exit "Imagemagick must be installed <https://imagemagick.org>. Aborting."
+fi
+
+# Dissect and examine filename
+file=${1:-}
+if [[ -z "$file" ]]; then
+  usage >&2
+  error_exit "Filename must be provided."
+fi
+name="${1%.*}"
+
+# Set quantity
+quantity=${2:-}
+if [[ -z "$quantity" ]]; then
+  quantity=1
 fi
 
 # Determining time codes

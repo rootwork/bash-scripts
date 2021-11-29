@@ -36,15 +36,15 @@
 # Create one screencap, from the middle of the video (by time code):
 # $ ./vidcap.sh avi1.avi
 #
-# Create five screencaps, evenly spaced across the video (by time code):
+# Create five screencaps, evenly spaced across the video:
 # $ ./vidcap.sh avi1.avi 5
 
-# Create ten screencaps, evenly spaced across the video (by time code), plus an
-# index image combining all of the screencaps:
+# Create ten screencaps, evenly spaced across the video, plus an index image
+# combining all of the screencaps:
 # $ ./vidcap.sh -x mp41.mp4 10
 
 # Create ONLY an index image combining twelve screencaps, evenly spaced across
-# the video (by time code), and don't return anything to the console but errors.
+# the video, and don't return anything to the console but errors:
 # $ ./vidcap.sh -o -q mp41.mp4 12
 
 # RESOURCES
@@ -131,6 +131,26 @@ ${bold}Options:${reset}
 -o, --onlyindex   Create ONLY an index image; do not save individual screencaps.
 -q, --quiet       Quiet mode.
 -h, --help        Display this help message and exit.
+
+${bold}Examples:${reset}
+
+Create one screencap, from the middle of the video (by time code):
+
+${green}$ ${PROGNAME} avi1.avi${reset}
+
+Create five screencaps, evenly spaced across the video:
+
+${green}$ ${PROGNAME} avi1.avi 5${reset}
+
+Create ten screencaps, evenly spaced across the video, plus an index image
+combining all of the screencaps:
+
+${green}$ ${PROGNAME} -x mp41.mp4 10${reset}
+
+Create ONLY an index image combining twelve screencaps, evenly spaced across
+the video, and don't return anything to the console but errors:
+
+${green}$ ${PROGNAME} -o -q mp41.mp4 12${reset}
 
 _EOF_
 }

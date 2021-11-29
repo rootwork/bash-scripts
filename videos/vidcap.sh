@@ -180,7 +180,6 @@ if [[ -z "$file" ]]; then
   error_exit "Filename must be provided."
 fi
 name="${1%.*}"
-ext="${1##*.}"
 
 number_of_screenshots=${2:-}
 if [[ -z "$number_of_screenshots" ]]; then

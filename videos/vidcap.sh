@@ -132,7 +132,7 @@ _EOF_
 
 # Options and flags from command line
 needs_arg() {
-  if [ -z "$OPTARG" ]; then
+  if [[ -z "$OPTARG" ]]; then
     error_exit "Error: Argument required for option '$OPT' but none provided."
   fi
 }
@@ -144,10 +144,10 @@ onlyindex=false
 while getopts :xo-:qh OPT; do
   # Using help flag only? The above should be:
   # while getopts :-:h OPT; do
-  if [ "$OPT" = "-" ]; then # long option: reformulate OPT and OPTARG
-    OPT="${OPTARG%%=*}"     # extract long option name
-    OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)
-    OPTARG="${OPTARG#=}"    # remove assigning `=`
+  if [[ "$OPT" = "-" ]]; then # long option: reformulate OPT and OPTARG
+    OPT="${OPTARG%%=*}"       # extract long option name
+    OPTARG="${OPTARG#$OPT}"   # extract long option argument (may be empty)
+    OPTARG="${OPTARG#=}"      # remove assigning `=`
   else
     OPTARG="${OPTARG#=}" # if short option, just remove assigning `=`
   fi
@@ -203,15 +203,15 @@ fi
 
 # Determining time codes
 duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
-if [[ ! $quiet_mode ]]; then
+if [[ $quiet_mode = "false" ]]; then
   printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
 fi
 
 # Take screencap
-if [ $number_of_screenshots -eq 1 ]; then
+if [[ $number_of_screenshots -eq 1 ]]; then
   # One screencap only
   ss=$(echo "${duration}/2" | bc)
-  if [[ ! $quiet_mode ]]; then
+  if [[ $quiet_mode = "false" ]]; then
     printf "%s\n" "${green}Capturing screencap at ${ss}s...${reset}"
     echo "ffmpeg -v quiet -ss \"${ss}\" -i \"${file}\" -vframes 1 -f image2 \"${name}.jpg\""
   fi
@@ -219,18 +219,18 @@ if [ $number_of_screenshots -eq 1 ]; then
 else
   # Multiple screencaps
   seek_factor=$(echo "scale=5; ($duration-0.1)/($number_of_screenshots-1)" | bc)
-  if [[ ! $quiet_mode ]]; then
+  if [[ $quiet_mode = "false" ]]; then
     printf "%s\n" "${green}Capturing frame every ${seek_factor} seconds...${reset}"
   fi
   for ss_idx in $(seq 0 $((number_of_screenshots - 1))); do
     ss=$(echo "${ss_idx} * ${seek_factor}" | bc)
-    if [ "$ss_idx" -lt 9 ]; then
+    if [[ "$ss_idx" -lt 9 ]]; then
       tmp_idx=$(echo "${ss_idx} + 1" | bc)
       file_idx="0$tmp_idx"
     else
       file_idx=$(echo "${ss_idx} + 1" | bc)
     fi
-    if [[ ! $quiet_mode ]]; then
+    if [[ $quiet_mode = "false" ]]; then
       printf "%s\n" "${green}Capturing screencap at ${ss}s...${reset}"
     fi
     "$ffmpeg" -v quiet -ss "${ss}" -i "${file}" -vframes 1 -f image2 "${name}_${file_idx}.jpg"
@@ -238,8 +238,8 @@ else
 fi
 
 # Create index file
-if [[ $index ]]; then
-  if [ $number_of_screenshots -eq 1 ]; then
+if [[ $index = "true" ]]; then
+  if [[ $number_of_screenshots -eq 1 ]]; then
     printf "%s\n" "${red}Creation of index requires at least two screencaps.${reset}"
     usage >&2
     error_exit "Insufficient screecaps for index."
@@ -253,10 +253,10 @@ if [[ $index ]]; then
 fi
 
 # Remove individual caps
-if [[ $onlyindex ]]; then
+if [[ $onlyindex = "true" ]]; then
   rm -f "${name}_"[0-9][0-9].jpg
 fi
 
-if [[ ! $quiet_mode ]]; then
+if [[ $quiet_mode = "false" ]]; then
   printf "%s\n" "${cyan}Finished!${reset}"
 fi

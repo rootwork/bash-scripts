@@ -173,21 +173,18 @@ while getopts :xo-:qh OPT; do
 done
 shift $((OPTIND - 1)) # remove parsed options and args from $@ list
 
-# Sanitize directory name
-path=$1
-[[ "$path" =~ ^[./].*$ ]] || path="./$path"
-
 # Dissect and examine filename
-file=$1
-name="${1%.*}"
-if [[ ! $file ]]; then
+file=${1:-}
+if [[ -z "$file" ]]; then
   usage >&2
   error_exit "Filename must be provided."
 fi
-if [[ ! $2 ]]; then
+name="${1%.*}"
+ext="${1##*.}"
+
+number_of_screenshots=${2:-}
+if [[ -z "$number_of_screenshots" ]]; then
   number_of_screenshots=1
-else
-  number_of_screenshots=$2
 fi
 
 # Dependencies

@@ -43,6 +43,9 @@
 - [stripvid.sh](videos/stripvid.sh): Strip metadata from a video.
 - [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and
   a duration or stop timecode.
+- [vidcap.sh](videos/vidcap.sh): Create screencaps of a video, that is,
+  individual images from different time codes of the video. (Not to be confused
+  with video captioning.)
 
 ### Boilerplate code
 

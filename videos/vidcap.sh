@@ -61,7 +61,7 @@
 # ---------------------------------------------------------------------------
 
 # Standard settings and variables
-set -euo pipefail
+set -eo pipefail
 IFS=$'\n\t'
 PROGNAME=${0##*/}
 VERSION="1.1"

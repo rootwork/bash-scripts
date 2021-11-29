@@ -16,11 +16,11 @@ syntax highlighting. Thus the second line in each file disables
 
 1. [commentblock.sh](commentblock.sh)
 2. [vars.sh](vars.sh)
-3. [pathname.sh](pathname.sh)
-4. [colors.sh](colors.sh)
-5. [errors.sh](errors.sh)
-6. [help.sh](help.sh)
-7. [options.sh](options.sh)
+3. [colors.sh](colors.sh)
+4. [errors.sh](errors.sh)
+5. [help.sh](help.sh)
+6. [options.sh](options.sh)
+7. [pathname.sh](pathname.sh)
 8. [dependencies.sh](dependencies.sh)
 
 When considering using temporary files: [temp.sh](temp.sh)

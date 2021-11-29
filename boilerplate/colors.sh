@@ -22,7 +22,6 @@ uline="\e[4m"
 reset="\e[0m"
 
 # tput (for printf)
-
 black=$(tput setaf 0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)

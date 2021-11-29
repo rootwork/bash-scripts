@@ -8,14 +8,14 @@
 # Copyright 2021, Ivan Boothe <git@rootwork.org>
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License at <http://www.gnu.org/licenses/> for
+# GNU Affero General Public License at <http://www.gnu.org/licenses/> for
 # more details.
 
 # USAGE
@@ -24,6 +24,7 @@
 # $ ./fadevid.sh [-h|--help]
 
 # Revision history:
+# 2021-11-29  Updating license (1.3)
 # 2021-10-18  Bitrate is now optional; if not provided at runtime the script
 #             will inform you of the current bitrate to give some guidance (1.2)
 # 2021-10-15  Adding help, dependency checks, and other standardization (1.1)
@@ -32,7 +33,7 @@
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.2"
+VERSION="1.3"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)

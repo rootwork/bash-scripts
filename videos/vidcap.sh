@@ -16,14 +16,14 @@
 # Copyright 2021, Ivan Boothe <git@rootwork.org>
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License at <http://www.gnu.org/licenses/> for
+# GNU Affero General Public License at <http://www.gnu.org/licenses/> for
 # more details.
 
 # USAGE
@@ -55,8 +55,8 @@
 # https://github.com/fdalvi/video-screencaps/blob/master/create_screenshots.sh
 
 # Revision history:
-# 2021-11-29  Added check for sufficient number of screencaps when creating
-#             index (1.1)
+# 2021-11-29  Adding check for sufficient number of screencaps when creating
+#             index, updating license (1.1)
 # 2021-11-28  Initial release (1.0)
 # ---------------------------------------------------------------------------
 

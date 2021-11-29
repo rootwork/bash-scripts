@@ -19,14 +19,14 @@
 # Copyright 2021, Ivan Boothe <git@rootwork.org>
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License at <http://www.gnu.org/licenses/> for
+# GNU Affero General Public License at <http://www.gnu.org/licenses/> for
 # more details.
 
 # USAGE
@@ -69,6 +69,7 @@
 # https://exiftool.org/forum/index.php?topic=3429.0
 
 # Revision history:
+# 2021-11-29  Updating license (1.4)
 # 2021-10-15  Adding checks for dependencies, updates to notifications (1.3)
 # 2021-10-14  Added flag options for date and time; applying quiet mode to
 #             exiftool; minor cleanup and bug fixes (1.2)
@@ -78,7 +79,7 @@
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.3"
+VERSION="1.4"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)

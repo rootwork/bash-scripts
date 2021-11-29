@@ -66,6 +66,19 @@ IFS=$'\n\t'
 PROGNAME=${0##*/}
 VERSION="1.1"
 
+# Dissect and examine filename
+file=${1:-}
+if [[ -z "$file" ]]; then
+  usage >&2
+  error_exit "Filename must be provided."
+fi
+name="${1%.*}"
+
+quantity=${2:-}
+if [[ -z "$quantity" ]]; then
+  quantity=1
+fi
+
 # Colors
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -200,19 +213,6 @@ while getopts :xo-:qh OPT; do
   esac
 done
 shift $((OPTIND - 1)) # remove parsed options and args from $@ list
-
-# Dissect and examine filename
-file=${1:-}
-if [[ -z "$file" ]]; then
-  usage >&2
-  error_exit "Filename must be provided."
-fi
-name="${1%.*}"
-
-quantity=${2:-}
-if [[ -z "$quantity" ]]; then
-  quantity=1
-fi
 
 # Dependencies
 ffmpeg=$(command -v ffmpeg)

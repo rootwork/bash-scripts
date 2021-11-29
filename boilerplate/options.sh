@@ -10,7 +10,7 @@
 
 # Options and flags from command line
 needs_arg() {
-  if [ -z "$OPTARG" ]; then
+  if [[ -z "$OPTARG" ]]; then
     error_exit "Error: Argument required for option '$OPT' but none provided."
   fi
 }
@@ -20,10 +20,10 @@ quiet_mode=false
 while getopts :dt-:qh OPT; do
   # Using help flag only? The above should be:
   # while getopts :-:h OPT; do
-  if [ "$OPT" = "-" ]; then # long option: reformulate OPT and OPTARG
-    OPT="${OPTARG%%=*}"     # extract long option name
-    OPTARG="${OPTARG#$OPT}" # extract long option argument (may be empty)
-    OPTARG="${OPTARG#=}"    # remove assigning `=`
+  if [[ "$OPT" = "-" ]]; then # long option: reformulate OPT and OPTARG
+    OPT="${OPTARG%%=*}"       # extract long option name
+    OPTARG="${OPTARG#$OPT}"   # extract long option argument (may be empty)
+    OPTARG="${OPTARG#=}"      # remove assigning `=`
   else
     OPTARG="${OPTARG#=}" # if short option, just remove assigning `=`
   fi

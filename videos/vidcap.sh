@@ -212,7 +212,7 @@ if [ $number_of_screenshots -eq 1 ]; then
   ss=$(echo "${duration}/2" | bc)
   if [[ ! $quiet_mode ]]; then
     printf "%s\n" "${green}Capturing screencap at ${ss}s...${reset}"
-    echo "ffmpeg -v quiet -stats -ss \"${ss}\" -i \"${file}\" -vframes 1 -f image2 \"${name}.jpg\""
+    echo "ffmpeg -v quiet -ss \"${ss}\" -i \"${file}\" -vframes 1 -f image2 \"${name}.jpg\""
   fi
   "$ffmpeg" -v quiet -ss "${ss}" -i "${file}" -vframes 1 -f image2 "${name}.jpg"
 else

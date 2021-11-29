@@ -211,7 +211,7 @@ if [[ $quiet_mode = "false" ]]; then
 fi
 
 # Checking that screencaps are not being requested for <1s intervals.
-seconds=$(awk "{print int($duration)}")
+seconds=$(awk "{print int(${duration})}")
 if [[ $quantity -gt $seconds ]]; then
   printf "%s\n" "${red}${quantity} screencaps exceeds length of the video, $seconds seconds.${reset}"
   error_exit "Screencaps cannot be made with less than one-second intervals."

@@ -79,9 +79,6 @@ if [[ -z "$quantity" ]]; then
   quantity=1
 fi
 
-# Determining time codes
-duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
-
 # Colors
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -233,24 +230,23 @@ if [[ $quantity -gt $seconds ]]; then
   error_exit "Screencaps cannot be made with less than one-second intervals."
 fi
 
-# Report video length
-if [[ $quiet_mode = "false" ]]; then
-  printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
-fi
-
 # Take screencap
 if [[ $quantity -eq 1 ]]; then
   # One screencap only
-  ss=$(echo "${duration}/2" | bc)
+  duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
+  ss=$(echo "scale=5; ${duration}/2" | bc)
   if [[ $quiet_mode = "false" ]]; then
+    printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
     printf "%s\n" "${green}Capturing screencap at ${ss}s...${reset}"
     echo "ffmpeg -v quiet -ss \"${ss}\" -i \"${file}\" -vframes 1 -f image2 \"${name}.jpg\""
   fi
   "$ffmpeg" -v quiet -ss "${ss}" -i "${file}" -vframes 1 -f image2 "${name}.jpg"
 else
   # Multiple screencaps
+  duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
   seek_factor=$(echo "scale=5; ($duration-0.1)/($quantity-1)" | bc)
   if [[ $quiet_mode = "false" ]]; then
+    printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
     printf "%s\n" "${green}Capturing frame every ${seek_factor} seconds...${reset}"
   fi
   for ss_idx in $(seq 0 $((quantity - 1))); do

@@ -7,6 +7,11 @@
 # This script requires the following software to be installed:
 # - ffmpeg: https://ffmpeg.org
 # - Imagemagick, which you likely already have: https://imagemagick.org
+#
+# Limitations:
+# 1. The script can only make a screencap every 1 second or more. This means if
+#    you have a 12 second video and request 15 screencaps, the script will fail.
+# 2. The index feature has a limit of 99 screencaps.
 
 # Copyright 2021, Ivan Boothe <git@rootwork.org>
 
@@ -184,9 +189,9 @@ if [[ -z "$file" ]]; then
 fi
 name="${1%.*}"
 
-number_of_screenshots=${2:-}
-if [[ -z "$number_of_screenshots" ]]; then
-  number_of_screenshots=1
+quantity=${2:-}
+if [[ -z "$quantity" ]]; then
+  quantity=1
 fi
 
 # Dependencies
@@ -205,8 +210,15 @@ if [[ $quiet_mode = "false" ]]; then
   printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
 fi
 
+# Checking that screencaps are not being requested for <1s intervals.
+seconds=$(awk "{printf(\"%d\n\",$duration + 0.5)}")
+if [[ $quantity -gt $seconds ]]; then
+  printf "%s\n" "${red}${quantity} screencaps exceeds length of the video, $seconds seconds.${reset}"
+  error_exit "Screencaps cannot be made with less than one-second intervals."
+fi
+
 # Take screencap
-if [[ $number_of_screenshots -eq 1 ]]; then
+if [[ $quantity -eq 1 ]]; then
   # One screencap only
   ss=$(echo "${duration}/2" | bc)
   if [[ $quiet_mode = "false" ]]; then
@@ -216,11 +228,11 @@ if [[ $number_of_screenshots -eq 1 ]]; then
   "$ffmpeg" -v quiet -ss "${ss}" -i "${file}" -vframes 1 -f image2 "${name}.jpg"
 else
   # Multiple screencaps
-  seek_factor=$(echo "scale=5; ($duration-0.1)/($number_of_screenshots-1)" | bc)
+  seek_factor=$(echo "scale=5; ($duration-0.1)/($quantity-1)" | bc)
   if [[ $quiet_mode = "false" ]]; then
     printf "%s\n" "${green}Capturing frame every ${seek_factor} seconds...${reset}"
   fi
-  for ss_idx in $(seq 0 $((number_of_screenshots - 1))); do
+  for ss_idx in $(seq 0 $((quantity - 1))); do
     ss=$(echo "${ss_idx} * ${seek_factor}" | bc)
     if [[ "$ss_idx" -lt 9 ]]; then
       tmp_idx=$(echo "${ss_idx} + 1" | bc)
@@ -237,10 +249,14 @@ fi
 
 # Create index file
 if [[ $index = "true" ]]; then
-  if [[ $number_of_screenshots -eq 1 ]]; then
+  if [[ $quantity -eq 1 ]]; then
     printf "%s\n" "${red}Creation of index requires at least two screencaps.${reset}"
     usage >&2
     error_exit "Insufficient screecaps for index."
+  fi
+  if [[ $quantity -gt 99 ]]; then
+    printf "%s\n" "${red}${quantity} screencaps exceeds the capability of the index image.${reset}"
+    error_exit "Index images cannot be made with more than 99 screencaps."
   fi
   width=$(ffprobe -v quiet -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 "${file}")
   halfwidth=$(echo "${width}/2" | bc)

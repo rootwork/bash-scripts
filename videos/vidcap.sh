@@ -232,6 +232,19 @@ if [[ $quantity -gt $seconds ]]; then
   error_exit "Screencaps cannot be made with less than one-second intervals."
 fi
 
+# Testing that index isn't being requested with incompatible quantities.
+if [[ $index = "true" ]]; then
+  if [[ $quantity -eq 1 ]]; then
+    printf "%s\n" "${red}Creation of index requires at least two screencaps.${reset}"
+    usage >&2
+    error_exit "Insufficient screecaps for index."
+  fi
+  if [[ $quantity -gt 99 ]]; then
+    printf "%s\n" "${red}${quantity} screencaps exceeds the capability of the index image.${reset}"
+    error_exit "Index images cannot be made with more than 99 screencaps."
+  fi
+fi
+
 # Take screencap
 if [[ $quantity -eq 1 ]]; then
   # One screencap only
@@ -264,15 +277,6 @@ fi
 
 # Create index file
 if [[ $index = "true" ]]; then
-  if [[ $quantity -eq 1 ]]; then
-    printf "%s\n" "${red}Creation of index requires at least two screencaps.${reset}"
-    usage >&2
-    error_exit "Insufficient screecaps for index."
-  fi
-  if [[ $quantity -gt 99 ]]; then
-    printf "%s\n" "${red}${quantity} screencaps exceeds the capability of the index image.${reset}"
-    error_exit "Index images cannot be made with more than 99 screencaps."
-  fi
   width=$(ffprobe -v quiet -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 "${file}")
   halfwidth=$(echo "${width}/2" | bc)
   "$montage" -quiet "${name}_02.jpg" -tile 1x1 -border 2 -geometry "${width}"x+0+0 "${name}_top.jpg"

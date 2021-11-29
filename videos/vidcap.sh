@@ -203,7 +203,7 @@ fi
 
 # Determining time codes
 duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
-if [[ -z $quiet_mode ]]; then
+if [[ ! $quiet_mode ]]; then
   printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
 fi
 
@@ -219,7 +219,7 @@ if [ $number_of_screenshots -eq 1 ]; then
 else
   # Multiple screencaps
   seek_factor=$(echo "scale=5; ($duration-0.1)/($number_of_screenshots-1)" | bc)
-  if [[ -z $quiet_mode ]]; then
+  if [[ ! $quiet_mode ]]; then
     printf "%s\n" "${green}Capturing frame every ${seek_factor} seconds...${reset}"
   fi
   for ss_idx in $(seq 0 $((number_of_screenshots - 1))); do
@@ -230,7 +230,7 @@ else
     else
       file_idx=$(echo "${ss_idx} + 1" | bc)
     fi
-    if [[ -z $quiet_mode ]]; then
+    if [[ ! $quiet_mode ]]; then
       printf "%s\n" "${green}Capturing screencap at ${ss}s...${reset}"
     fi
     "$ffmpeg" -v quiet -ss "${ss}" -i "${file}" -vframes 1 -f image2 "${name}_${file_idx}.jpg"
@@ -257,6 +257,6 @@ if [[ $onlyindex ]]; then
   rm -f "${name}_"[0-9][0-9].jpg
 fi
 
-if [[ -z $quiet_mode ]]; then
+if [[ ! $quiet_mode ]]; then
   printf "%s\n" "${cyan}Finished!${reset}"
 fi

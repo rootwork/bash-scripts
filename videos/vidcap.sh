@@ -65,14 +65,14 @@ PROGNAME=${0##*/}
 VERSION="1.1"
 
 # Dissect and examine filename
-file=${1:-}
+file=$1
 if [[ -z "$file" ]]; then
   usage >&2
   error_exit "Filename must be provided."
 fi
 name="${1%.*}"
 
-quantity=${2:-}
+quantity=$2
 if [[ -z "$quantity" ]]; then
   quantity=1
 fi

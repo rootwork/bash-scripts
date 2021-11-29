@@ -98,7 +98,6 @@ error_exit() {
 # command || error_exit "command failed in line $LINENO"
 
 graceful_exit() {
-  rm -f "${name}_"*.jpg
   exit 0
 }
 

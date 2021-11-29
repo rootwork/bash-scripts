@@ -184,9 +184,10 @@ if [[ ! $file ]]; then
   usage >&2
   error_exit "Filename must be provided."
 fi
-number_of_screenshots=$2
-if [[ ! $number_of_screenshots ]]; then
+if [[ ! $2 ]]; then
   number_of_screenshots=1
+else
+  number_of_screenshots=$2
 fi
 
 # Dependencies

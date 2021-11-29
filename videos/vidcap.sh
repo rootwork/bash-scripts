@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ---------------------------------------------------------------------------
 # vidcap - Create screencaps of a video, that is, individual images from

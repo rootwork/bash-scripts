@@ -14,6 +14,9 @@ needs_arg() {
     error_exit "Error: Argument required for option '$OPT' but none provided."
   fi
 }
+# Set flag-created variables to false by default
+quiet_mode=false
+# Run the comparison (be sure to change the "getopts" below!)
 while getopts :dt-:qh OPT; do
   # Using help flag only? The above should be:
   # while getopts :-:h OPT; do

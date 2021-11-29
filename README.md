@@ -102,4 +102,5 @@ which also has flavors in
 
 # License
 
-GPLv3. See [LICENSE](LICENSE).
+GNU Affero General Public License v3.0 or later (AGPL 3+). See
+[LICENSE](LICENSE).

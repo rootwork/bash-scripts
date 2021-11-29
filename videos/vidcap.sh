@@ -79,6 +79,9 @@ if [[ -z "$quantity" ]]; then
   quantity=1
 fi
 
+# Determining time codes
+duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
+
 # Colors
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -173,6 +176,10 @@ needs_arg() {
     error_exit "Error: Argument required for option '$OPT' but none provided."
   fi
 }
+# Set flag-created variables to false by default
+quiet_mode=false
+index=false
+onlyindex=false
 # Run the comparison
 while getopts :xo-:qh OPT; do
   if [[ "$OPT" = "-" ]]; then # long option: reformulate OPT and OPTARG
@@ -219,17 +226,16 @@ if [[ ! $montage ]]; then
   error_exit "Imagemagick must be installed <https://imagemagick.org>. Aborting."
 fi
 
-# Determining time codes
-duration=$(ffprobe -show_streams "${file}" 2>&1 | grep "^duration=" | cut -d'=' -f2 | head -1)
-if [[ $quiet_mode = "false" ]]; then
-  printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
-fi
-
 # Checking that screencaps are not being requested for <1s intervals.
 seconds=${duration%.*}
 if [[ $quantity -gt $seconds ]]; then
   printf "%s\n" "${red}${quantity} screencaps exceeds length of the video, $seconds seconds.${reset}"
   error_exit "Screencaps cannot be made with less than one-second intervals."
+fi
+
+# Report video length
+if [[ $quiet_mode = "false" ]]; then
+  printf "%s\n" "${cyan}Video is ${duration} seconds long.${reset}"
 fi
 
 # Take screencap

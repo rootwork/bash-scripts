@@ -50,25 +50,22 @@
 # https://github.com/fdalvi/video-screencaps/blob/master/create_screenshots.sh
 
 # Revision history:
+# 2021-11-29  Added check for sufficient number of screencaps when creating
+#             index (1.1)
 # 2021-11-28  Initial release (1.0)
 # ---------------------------------------------------------------------------
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.0"
+VERSION="1.1"
 
 # Colors
-black=$(tput setaf 0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
-magenta=$(tput setaf 5)
 cyan=$(tput setaf 6)
-white=$(tput setaf 7)
 bold=$(tput bold)
 reset=$(tput sgr0)
-reverse=$(tput smso)
 
 # Error handling
 error_exit() {
@@ -238,6 +235,11 @@ fi
 
 # Create index file
 if [[ $index ]]; then
+  if [ $number_of_screenshots -eq 1 ]; then
+    printf "%s\n" "${red}Creation of index requires at least two screencaps.${reset}"
+    usage >&2
+    error_exit "Insufficient screecaps for index."
+  fi
   width=$(ffprobe -v quiet -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 "${file}")
   halfwidth=$(echo "${width}/2" | bc)
   "$montage" -quiet "${name}_02.jpg" -tile 1x1 -border 2 -geometry "${width}"x+0+0 "${name}_top.jpg"

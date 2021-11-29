@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=all
 #
 # The comment block.
@@ -6,11 +6,13 @@
 # Sources:
 #
 # https://linuxcommand.org/lc3_adv_standards.php
+# https://www.cyberciti.biz/tips/finding-bash-perl-python-portably-using-env.html
 
 # #############################
 # (Actual example begins below)
 # #############################
 
+#!/usr/bin/env bash
 # ---------------------------------------------------------------------------
 # [scriptname] - [Short description.]
 #

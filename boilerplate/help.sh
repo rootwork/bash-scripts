@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=all
 #
 # Help and usage messages.
@@ -8,7 +8,8 @@
 # https://linuxcommand.org/lc3_adv_standards.php
 
 # USAGE should match the "Usage" section from the comment block.
-# HELP's description should match the "Long Description" from the comment block.
+# HELP's description should match the description or "Long Description" from the
+# comment block.
 
 # Usage: Separate lines for mutually exclusive options.
 usage() {

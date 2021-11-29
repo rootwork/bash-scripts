@@ -1,7 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=all
 #
 # Standard variables.
+#
+# Note the PROGNAME is just that, the name -- _not_ the program's location! See
+# https://mywiki.wooledge.org/BashFAQ/028
+# for suggestions on determining the program's location.
 #
 # Sources:
 #

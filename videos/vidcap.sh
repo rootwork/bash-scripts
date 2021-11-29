@@ -173,10 +173,6 @@ needs_arg() {
     error_exit "Error: Argument required for option '$OPT' but none provided."
   fi
 }
-# Set flag-created variables to false by default
-quiet_mode=false
-index=false
-onlyindex=false
 # Run the comparison
 while getopts :xo-:qh OPT; do
   if [[ "$OPT" = "-" ]]; then # long option: reformulate OPT and OPTARG

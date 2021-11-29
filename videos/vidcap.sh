@@ -149,7 +149,9 @@ while getopts :xo-:qh OPT; do
     OPTARG="${OPTARG#$OPT}"   # extract long option argument (may be empty)
     OPTARG="${OPTARG#=}"      # remove assigning `=`
   else
-    OPTARG="${OPTARG#=}" # if short option, just remove assigning `=`
+    if [[ "$OPTARG" ]]; then
+      OPTARG="${OPTARG#=}" # if short option, just remove assigning `=`
+    fi
   fi
   case "$OPT" in
     h | help)

@@ -23,4 +23,10 @@ syntax highlighting. Thus the second line in each file disables
 7. [pathname.sh](pathname.sh)
 8. [dependencies.sh](dependencies.sh)
 
-When considering using temporary files: [temp.sh](temp.sh)
+If considering using temporary files: [temp.sh](temp.sh)
+
+When you're ready to release, be sure to go back over the script and look for
+comment lines that don't need to be included, as well as pieces that may not be
+necessary -- checking for flags with arguments when you're not using any such
+flags, deriving the extension of a provided file without using that variable,
+etc.

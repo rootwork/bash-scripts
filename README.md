@@ -2,18 +2,18 @@
 
 [![License](https://img.shields.io/npm/l/mjml-bullet-list?color=brightgreen&style=flat-square)](https://github.com/premail/mjml-bullet-list/blob/main/LICENSE)
 
-## Script types
+Scripts marked with a 🌟 are ones I use a lot or am particularly proud of.
 
 ### Image manipulation
 
-- [imagedate.sh](images/imagedate.sh): Rewrite file and metadata dates on images
+- 🌟 [imagedate.sh](images/imagedate.sh): Rewrite file and metadata dates on images
   to increment in the order of the alphabetized filenames. Useful when you have
   a system (Snapfish) that will only order by date, but you want images ordered
   by filename.
 - [minpic.sh](images/minpic.sh): Minify JPEG and PNG images, losslessly, for the
   web. Really just a more convenient wrapper for
   [Trimage](https://trimage.org/).
-- [modimg.sh](images/modimg.sh): Create optimized image formats for the web.
+- 🌟 [modimg.sh](images/modimg.sh): Create optimized image formats for the web.
   Generate [WebP](https://developers.google.com/speed/webp),
   [AVIF](https://web.dev/compress-images-avif/), and
   [JXL](https://cloudinary.com/blog/how_jpeg_xl_compares_to_other_image_codecs)
@@ -27,7 +27,7 @@
 - [avimp4.sh](videos/avimp4.sh): Convert AVI videos to MP4 format. More thorough
   than ffmpeg's default process, resulting in both smaller and better-quality
   videos.
-- [convertvid.sh](videos/convertvid.sh): Convert any video files readable by
+- 🌟 [convertvid.sh](videos/convertvid.sh): Convert any video files readable by
   ffmpeg (including but not limited to MP4, MPG, M4V, MOV, WEBM, WMV, AVI, 3GP)
   into modern H265-encoded MP4 file. This will generally be smaller in file size
   and more widely playable than other video formats.
@@ -43,7 +43,7 @@
 - [stripvid.sh](videos/stripvid.sh): Strip metadata from a video.
 - [trimvid.sh](videos/trimvid.sh): Trim MP4 videos with a starting timecode and
   a duration or stop timecode.
-- [vidcap.sh](videos/vidcap.sh): Create screencaps of a video, that is,
+- 🌟 [vidcap.sh](videos/vidcap.sh): Create screencaps of a video, that is,
   individual images from different time codes of the video. (Not to be confused
   with video captioning.)
 

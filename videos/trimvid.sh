@@ -25,7 +25,7 @@
 
 # USAGE
 #
-# $ ./trimvid.sh <FILE> <START> [END]
+# $ ./trimvid.sh <FILE> <START> [END] [OUTPUT-FILE]
 
 # EXAMPLES
 #
@@ -36,6 +36,9 @@
 # number (in seconds), in which case it acts as a duration, OR a timecode in the
 # form of HH:MM:SS, in which case it acts as a stop position.
 #
+# OUTPUT-FILE is optional. If no value is provided, it creates a video with
+# "-trim" appended to the original filename.
+#
 # Trim video.mp4 beginning at 1 minute, 29 seconds to the end of the video:
 # $ ./trimvid.sh video.mp4 00:01:29
 #
@@ -44,10 +47,11 @@
 # $ ./trimvid.sh video.mp4 00:01:29 90
 #
 # Trim video.mp4 beginning at 1 minute, 29 seconds and ending at 1 hour, 52
-# minutes, 56 seconds:
-# $ ./trimvid.sh video.mp4 00:01:29 01:52:56
+# minutes, 56 seconds; name the video "final.mp4":
+# $ ./trimvid.sh video.mp4 00:01:29 01:52:56 final.mp4
 
 # Revision history:
+# 2021-12-30  Adding output filename option (1.3)
 # 2021-11-29  Updating license (1.2)
 # 2021-10-15  Adding help, dependency checks, and other standardization (1.1)
 # 2021-10-11  Initial release (1.0)
@@ -55,7 +59,7 @@
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.2"
+VERSION="1.3"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
@@ -95,7 +99,7 @@ signal_exit() {
 # Usage: Separate lines for mutually exclusive options.
 usage() {
   printf "%s\n" \
-    "${bold}Usage:${reset} ${PROGNAME} <FILE> <START> [END]"
+    "${bold}Usage:${reset} ${PROGNAME} <FILE> <START> [END] [OUTPUT-FILE]"
   printf "%s\n" \
     "       ${PROGNAME} [-h|--help]"
 }
@@ -123,6 +127,9 @@ the end of the video. If a value is provided, it can be either a decimal number
 (in seconds), in which case it acts as a duration, OR a timecode in the form of
 HH:MM:SS, in which case it acts as a stop position.
 
+OUTPUT-FILE is optional. If no value is provided, it creates a video with
+"-trim" appended to the original filename.
+
 Trim video.mp4 beginning at 1 minute, 29 seconds to the end of the video:
 
 ${green}$ ${PROGNAME} video.mp4 00:01:29${reset}
@@ -133,9 +140,9 @@ and a half minutes):
 ${green}$ ${PROGNAME} video.mp4 00:01:29 90${reset}
 
 Trim video.mp4 beginning at 1 minute, 29 seconds and ending at 1 hour, 52
-minutes, 56 seconds:
+minutes, 56 seconds; name the video "final.mp4":
 
-${green}$ ${PROGNAME} video.mp4 00:01:29 01:52:56${reset}
+${green}$ ${PROGNAME} video.mp4 00:01:29 01:52:56 final.mp4${reset}
 
 _EOF_
 }
@@ -170,13 +177,17 @@ name="${1%.*}"
 ext="${1##*.}"
 start=$2
 end=$3
+output=$4
 if [[ ! $file ]]; then
   usage >&2
-  error_exit "Filename must be provided."
+  error_exit "Input filename must be provided."
 fi
 if [[ ! $start ]]; then
   usage >&2
   error_exit "Start timecode must be provided."
+fi
+if [[ ! $output ]]; then
+  output="${name}-trim.${ext}"
 fi
 
 # Dependencies
@@ -205,9 +216,9 @@ else
 fi
 
 if [ -f "${file}" ]; then # Make sure video file exists
-  "$ffmpeg" -v quiet -stats -ss "$start" -i "$file" -t "$end" -c copy -map_metadata -1 -map_chapters -1 "$name"-trim."$ext"
+  "$ffmpeg" -v quiet -stats -ss "$start" -i "$file" -t "$end" -c copy -map_metadata -1 -map_chapters -1 "$output"
 
-  printf "%s\n" "${green}Video trimmed. File: ${reset}${bold}${name}-trim.${ext}${reset}"
+  printf "%s\n" "${green}Video trimmed. File: ${reset}${bold}${output}"
 else
   error_exit "Video file '${file}' not found."
 fi

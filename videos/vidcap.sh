@@ -28,7 +28,8 @@
 
 # USAGE
 #
-# $ ./vidcap.sh [-x|--index] [-q|quiet] <FILE> [INT (number of screencaps; default 1)]
+# $ ./vidcap.sh [-x|--index] [-n|--no-first-last] [-q|quiet] <FILE> [INT (number of screencaps; default 1)]
+# $ ./vidcap.sh [-o|--onlyindex] [-n|--no-first-last] [-q|quiet] <FILE> [INT]
 # $ ./vidcap.sh [-h|--help]
 
 # EXAMPLES
@@ -43,6 +44,10 @@
 # combining all of the screencaps:
 # $ ./vidcap.sh -x mp41.mp4 10
 
+# Create ten screencaps, evenly spaced across the video but not including the
+# first and last screens, plus an index image combining all of the screencaps:
+# $ ./vidcap.sh -x -n mp41.mp4 10
+
 # Create ONLY an index image combining twelve screencaps, evenly spaced across
 # the video, and don't return anything to the console but errors:
 # $ ./vidcap.sh -o -q mp41.mp4 12
@@ -55,6 +60,7 @@
 # https://github.com/fdalvi/video-screencaps/blob/master/create_screenshots.sh
 
 # Revision history:
+# 2022-03-04  Adding ability to omit first and last screencaps from index (1.2)
 # 2021-11-29  Adding check for sufficient number of screencaps when creating
 #             index, updating license (1.1)
 # 2021-11-28  Initial release (1.0)
@@ -64,7 +70,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 PROGNAME=${0##*/}
-VERSION="1.1"
+VERSION="1.2"
 
 # Colors
 red=$(tput setaf 1)
@@ -107,7 +113,9 @@ signal_exit() {
 # Usage: Separate lines for mutually exclusive options.
 usage() {
   printf "%s\n" \
-    "${bold}Usage:${reset} ${PROGNAME} [-x|--index] [-o|--onlyindex] [-q|--quiet] <FILE> [INT (number of screencaps; default 1)]"
+    "${bold}Usage:${reset} ${PROGNAME} [-x|--index] [-n|--no-first-last] [-q|--quiet] <FILE> [INT (number of screencaps; default 1)]"
+  printf "%s\n" \
+    "       ${PROGNAME} [-o|--onlyindex] [-n|--no-first-last] [-q|--quiet] <FILE> [INT]"
   printf "%s\n" \
     "       ${PROGNAME} [-h|--help]"
 }
@@ -124,10 +132,13 @@ codes of the video. (Not to be confused with video captioning.)${reset}
 $(usage)
 
 ${bold}Options:${reset}
--x, --index       Create an index image combining all of the screencaps.
--o, --onlyindex   Create ONLY an index image; do not save individual screencaps.
--q, --quiet       Quiet mode.
--h, --help        Display this help message and exit.
+-x, --index          Create an index image combining all of the screencaps.
+-o, --onlyindex      Create ONLY an index image; do not save individual screencaps.
+-n, --no-first-last  When capturing screencaps, omit the first and last
+                     timecodes of the video. Useful when the video begins or
+                     ends with blank screens.
+-q, --quiet          Quiet mode.
+-h, --help           Display this help message and exit.
 
 ${bold}Examples:${reset}
 
@@ -144,6 +155,11 @@ combining all of the screencaps:
 
 ${green}$ ${PROGNAME} -x mp41.mp4 10${reset}
 
+Create ten screencaps, evenly spaced across the video but not including the
+first and last screens, plus an index image combining all of the screencaps:
+
+${green}$ ${PROGNAME} -x -n mp41.mp4 10${reset}
+
 Create ONLY an index image combining twelve screencaps, evenly spaced across
 the video, and don't return anything to the console but errors:
 
@@ -157,8 +173,9 @@ _EOF_
 quiet_mode=false
 index=false
 onlyindex=false
+no_first_last=false
 # Run the comparison
-while getopts :xo-:qh OPT; do
+while getopts :xon-:qh OPT; do
   if [[ "$OPT" = "-" ]]; then # long option: reformulate OPT and OPTARG
     OPT="${OPTARG%%=*}"       # extract long option name
     OPTARG="${OPTARG#$OPT}"   # extract long option argument (may be empty)
@@ -180,6 +197,9 @@ while getopts :xo-:qh OPT; do
     o | onlyindex)
       index=true
       onlyindex=true
+      ;;
+    n | no-first-last)
+      no_first_last=true
       ;;
     ??*) # bad long option
       usage >&2
@@ -254,11 +274,17 @@ if [[ $quantity -eq 1 ]]; then
   "$ffmpeg" -v quiet -ss "${ss}" -i "${file}" -vframes 1 -f image2 "${name}.jpg"
 else
   # Multiple screencaps
+  if [[ $no_first_last = "true" ]]; then
+    quantity=($quantity+2)
+    searching=$(seq 1 $((quantity - 2)))
+  else
+    searching=$(seq 0 $((quantity - 1)))
+  fi
   seek_factor=$(echo "scale=5; ($duration-0.1)/($quantity-1)" | bc)
   if [[ $quiet_mode = "false" ]]; then
     printf "%s\n" "${green}Capturing frame every ${seek_factor} seconds...${reset}"
   fi
-  for ss_idx in $(seq 0 $((quantity - 1))); do
+  for ss_idx in $searching; do
     ss=$(echo "${ss_idx} * ${seek_factor}" | bc)
     if [[ "$ss_idx" -lt 9 ]]; then
       tmp_idx=$(echo "${ss_idx} + 1" | bc)

@@ -36,8 +36,24 @@
 # v8.11.0, which is currently newer than a lot of systems have (for instance
 # Debian stable). If libvips is not installed, this tool will fall back to
 # imagemagick, which will write JXLs but will not save much in file size.
+#
+# Note on image optimization:
+#
+# As described above, this script uses Imagemagick for image optimization.
+# Imagemagick will recompress an image every time optimization is run, even if
+# it's been done before. This means the operation is not idempotent and will
+# result in new versions of old (already-optimized) files. If this bothers you,
+# alternative tools that could perform optimization include exiv2, exiftool,
+# or format-specific tools like jpegtran and pngquant.
+# References:
+# https://legacy.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10895
+# https://stackoverflow.com/q/2654281
+#
+# For a simpler version of this script optimized to run in conjunction with a
+# Hugo static-site generator website, see:
+# https://github.com/rootwork/rootwork.org/blob/main/scripts/image_optimize.sh
 
-# Copyright 2021 Ivan Boothe <git@rootwork.org>
+# Copyright 2022 Ivan Boothe <git@rootwork.org>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -105,6 +121,7 @@
 # https://github.com/varnav/makejxl
 
 # Revision history:
+# 2022-04-07  Minor documentation updates (1.4)
 # 2021-11-29  Updating license (1.3)
 # 2021-10-19  Improvement of option flags and addition of JXL format (1.2)
 # 2021-10-18  Cleanup and standardization (1.1)
@@ -113,7 +130,7 @@
 
 # Standard variables
 PROGNAME=${0##*/}
-VERSION="1.3"
+VERSION="1.4"
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)

@@ -21,6 +21,10 @@ Scripts marked with a 🌟 are ones I use a lot or am particularly proud of.
   and GIF images. See the file for additional options and details.
 - [webpjpg.sh](images/webpjpg.sh): Convert webp images to lossless PNG first,
   then to JPEG.
+- 🌟 [pdf2jpg.sh](images/pdf2jpg.sh): Convert each page of a PDF to JPEG images,
+  each with the same name as the PDF and the page number appended. Page range,
+  image resolution and quality are configurable. Defaults to progressive JPEGs
+  optimized for the web.
 
 ### Video manipulation
 
